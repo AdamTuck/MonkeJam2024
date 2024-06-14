@@ -1697,7 +1697,7 @@ GameObject:
   - component: {fileID: 1639904460}
   - component: {fileID: 1639904459}
   - component: {fileID: 1639904458}
-  m_Layer: 3
+  m_Layer: 8
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6701,7 +6701,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3abf8c5b4acd91e43a9cce620d69e680, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  items: []
+  bomb: {fileID: 8407956042590016833, guid: d95cc4f103aa4a3418ca55528e602375, type: 3}
+  shotgunShell: {fileID: 8407956042590016833, guid: cab2942c2b73c0e40b6d9e57cff2eb50,
+    type: 3}
+  jumpPad: {fileID: 8407956042590016833, guid: 71041f8d9aab352468cc492051400a8c, type: 3}
 --- !u!114 &8781738463413289296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6714,9 +6717,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94d25257bc59597429f6f63b9c29955d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  items: []
   playerInput: {fileID: 0}
-  selectedItem: {fileID: 0}
   itemCount: 0
   itemCooldownTimer: 0
 --- !u!135 &8788185613009358608

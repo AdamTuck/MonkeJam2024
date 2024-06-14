@@ -15,8 +15,8 @@ public class PlayerInput : MonoBehaviour
     public bool leftBtn { get; private set; }
     public bool rightBtn { get; private set; }
     public bool escape { get; private set; }
-    public bool weapon1Pressed { get; private set; }
-    public bool weapon2Pressed { get; private set; }
+    public bool itemWheelDown { get; private set; }
+    public bool itemWheelUp { get; private set; }
     public bool commandPressed { get; private set; }
 
     private bool clear;
@@ -41,6 +41,7 @@ public class PlayerInput : MonoBehaviour
     {
         ClearInputs();
         SetInputs();
+        
     }
 
     private void FixedUpdate()
@@ -67,8 +68,8 @@ public class PlayerInput : MonoBehaviour
 
             escape = escape || Input.GetKeyDown(KeyCode.Escape);
 
-            weapon1Pressed = weapon1Pressed || Input.GetKeyDown(KeyCode.Alpha1);
-            weapon2Pressed = weapon2Pressed || Input.GetKeyDown(KeyCode.Alpha2);
+            itemWheelDown = itemWheelDown || Input.GetKeyDown(KeyCode.Alpha1);
+            itemWheelUp = itemWheelUp || Input.GetKeyDown(KeyCode.Alpha2);
 
             commandPressed = commandPressed || Input.GetKeyDown(KeyCode.F);
         }
@@ -94,8 +95,8 @@ public class PlayerInput : MonoBehaviour
 
         escape = false;
 
-        weapon1Pressed = false;
-        weapon2Pressed = false;
+        itemWheelDown = false;
+        itemWheelUp = false;
 
         commandPressed = false;
     }
