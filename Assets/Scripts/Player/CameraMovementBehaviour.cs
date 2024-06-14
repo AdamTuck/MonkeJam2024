@@ -9,8 +9,10 @@ public class CameraMovementBehaviour : MonoBehaviour
     [Header("Player Turn")]
     [SerializeField] private float turnSpeed;
     [SerializeField] private bool invertMouse;
+    [SerializeField] private float maxCamXRotation;
+    [SerializeField] private float maxCamYRotation;
 
-    private float cameraXRotation;
+    private float cameraXRotation, cameraYRotation;
 
     // Start is called before the first frame update
     void Start()
@@ -30,8 +32,11 @@ public class CameraMovementBehaviour : MonoBehaviour
     void CameraRotation ()
     {
         cameraXRotation += playerInput.mouseY * Time.deltaTime * turnSpeed * (invertMouse ? 1 : -1);
-        cameraXRotation = Mathf.Clamp(cameraXRotation, -40, 40);
+        cameraYRotation += playerInput.mouseX * Time.deltaTime * turnSpeed;
 
-        transform.localRotation = Quaternion.Euler(cameraXRotation, 0, 0);
+        cameraXRotation = Mathf.Clamp(cameraXRotation, maxCamXRotation*-1, maxCamXRotation);
+        cameraYRotation = Mathf.Clamp(cameraYRotation, maxCamYRotation*-1, maxCamYRotation);
+
+        transform.localRotation = Quaternion.Euler(cameraXRotation, cameraYRotation, 0);
     }
 }
