@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class UIManager : MonoBehaviour
@@ -10,6 +11,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject pauseScreen;
     [SerializeField] private TMP_Text tutorialText;
     [SerializeField] private float tutorialTimeout;
+    [SerializeField] private Slider staminaBar;
 
     public TMP_Text txtHealth;
     public GameObject gameOverText;
@@ -128,5 +130,10 @@ public class UIManager : MonoBehaviour
             pauseScreen.SetActive(false);
             Time.timeScale = 1;
         }
+    }
+
+    public void SetStaminaBar(float staminaValue)
+    {
+        staminaBar.value = staminaValue;
     }
 }
