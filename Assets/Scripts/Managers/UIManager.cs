@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text tutorialText;
     [SerializeField] private float tutorialTimeout;
     [SerializeField] private Slider staminaBar;
+    [SerializeField] private TMP_Text txtSpeed;
 
     public TMP_Text txtHealth;
     public GameObject gameOverText;
@@ -135,5 +136,10 @@ public class UIManager : MonoBehaviour
     public void SetStaminaBar(float staminaValue)
     {
         staminaBar.value = staminaValue;
+    }
+
+    public void SetSpeedNum (float speedNum)
+    {
+        txtSpeed.text = $"Speed: {Mathf.Round(speedNum*2.5f)} kph";
     }
 }

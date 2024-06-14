@@ -9,6 +9,7 @@ public class PlayerMovementBehaviour : MonoBehaviour
 
     [Header("Player Movement")]
     [SerializeField] private float topSpeed;
+    [SerializeField] private float topSpeedSprinting;
     [SerializeField] private float accelerationRate;
     [SerializeField] private float momentumDegradeRate;
     [SerializeField] private float gravity = -9.81f;
@@ -58,36 +59,39 @@ public class PlayerMovementBehaviour : MonoBehaviour
     {
         if (playerInput.vertical > 0 && currentEndurance > 0)
         {
-            if (PlayerInput.instance.sprint)
+            if (playerInput.sprint)
             {
                 enduranceDegradeMultiplier = 2;
-                currentSpeed = Mathf.Clamp(currentSpeed + accelerationRate*2, 0, topSpeed*1.5f);
+                currentSpeed = Mathf.Clamp(currentSpeed + accelerationRate*2, 0, topSpeedSprinting);
+                Debug.Log($"sprinting: {currentSpeed}, {topSpeed}, {topSpeedSprinting}");
             }
             else
             {
                 enduranceDegradeMultiplier = 1;
-                currentSpeed = Mathf.Clamp(currentSpeed + accelerationRate, 0, topSpeed);
+
+                if (currentSpeed > topSpeed)
+                    currentSpeed = Mathf.Clamp(currentSpeed - momentumDegradeRate, 0, topSpeedSprinting);
+                else
+                    currentSpeed = Mathf.Clamp(currentSpeed + accelerationRate, 0, topSpeed);
             }
 
-            currentSpeed = Mathf.Clamp(currentSpeed + accelerationRate, 0, topSpeed);
+            //currentSpeed = Mathf.Clamp(currentSpeed + accelerationRate, 0, topSpeed);
         }
         else if (playerInput.vertical < 0 && currentEndurance > 0)
         {
-            currentSpeed = Mathf.Clamp(currentSpeed - accelerationRate, 0, topSpeed);
+            currentSpeed = Mathf.Clamp(currentSpeed - accelerationRate*2, 0, topSpeedSprinting);
             enduranceDegradeMultiplier = 1;
         }
         else
         {
-            currentSpeed = Mathf.Clamp(currentSpeed - momentumDegradeRate, 0, topSpeed);
+            currentSpeed = Mathf.Clamp(currentSpeed - momentumDegradeRate, 0, topSpeed * 1.5f);
             enduranceDegradeMultiplier = 0;
         }
         
-        moveMultiplier = playerInput.sprint ? sprintMultiplier : 1;
+        //moveMultiplier = playerInput.sprint ? sprintMultiplier : 1;
 
         //characterController.Move((transform.forward * playerInput.vertical + transform.right * playerInput.horizontal) * moveSpeed * Time.deltaTime * moveMultiplier);
-        characterController.Move(transform.forward * currentSpeed * Time.deltaTime * moveMultiplier);
-
-        Debug.Log($"Currentspeed: {currentSpeed}");
+        characterController.Move(transform.forward * currentSpeed * Time.deltaTime);
 
         if (isGrounded && playerVelocity.y < 0)
         {
@@ -97,6 +101,8 @@ public class PlayerMovementBehaviour : MonoBehaviour
         playerVelocity.y += gravity * Time.deltaTime;
 
         characterController.Move(playerVelocity * Time.deltaTime);
+
+        UIManager.instance.SetSpeedNum(currentSpeed);
     }
 
     void GroundedCheck()
