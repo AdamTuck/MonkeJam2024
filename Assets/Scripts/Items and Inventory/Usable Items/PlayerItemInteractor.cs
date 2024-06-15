@@ -105,14 +105,4 @@ public class PlayerItemInteractor : MonoBehaviour
         itemOnCooldown = false;
     }
     #endregion ResetFunctions
-
-    #region Gizmos
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-
-        Gizmos.DrawWireCube(transform.position + transform.forward * 10, new Vector3(5,5,5));
-    }
-    #endregion
-
 }

@@ -26,16 +26,6 @@ public class ShopManager : MonoBehaviour
     }
     public void Update()
     {
-        if (playerInput.openCloseShop)
-        {
-            foreach (GameObject go in toDisable)
-            {
-                go.SetActive(false);
-            }
-            shopWindow.enabled = true;
-            playerInput.CutsceneStarted();
-        }
-
         //Update text only if shop window is open
         if (shopWindow.enabled )
         {
@@ -54,7 +44,7 @@ public class ShopManager : MonoBehaviour
             go.SetActive(true);
         }
         shopWindow.enabled = false;
-        playerInput.CutsceneEnded();
+        playerInput.UnlockInputs();
     }
 
     //----------------------------- ITEM SHOP -----------------------------//

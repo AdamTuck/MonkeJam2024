@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2df482c6b2799f644925375aa4e4dac7, type: 3}
   m_Name: Shotgun
   m_EditorClassIdentifier: 
-  count: 9
+  count: 10
   cost: 10
   itemCooldown: 0
   spawnObject: {fileID: 100004, guid: 82019e923dca94848916b96b8f98a352, type: 3}
   spawnOffset: {x: 0.5, y: 1, z: 2}
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 1024
