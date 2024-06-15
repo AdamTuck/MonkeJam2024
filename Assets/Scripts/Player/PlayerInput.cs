@@ -69,13 +69,14 @@ public class PlayerInput : MonoBehaviour
             rightBtn = rightBtn || Input.GetButtonDown("Fire2");
 
             tab = tab || Input.GetKeyDown(KeyCode.Tab);
-            escape = escape || Input.GetKeyDown(KeyCode.Escape);
-
+            
             weapon1Pressed = weapon1Pressed || Input.GetKeyDown(KeyCode.Alpha1);
             weapon2Pressed = weapon2Pressed || Input.GetKeyDown(KeyCode.Alpha2);
 
             commandPressed = commandPressed || Input.GetKeyDown(KeyCode.F);
         }
+
+        escape = escape || Input.GetKeyDown(KeyCode.Escape);
     }
 
     void ClearInputs ()
@@ -106,14 +107,14 @@ public class PlayerInput : MonoBehaviour
         commandPressed = false;
     }
 
-    public void CutsceneStarted ()
+    public void LockInputs ()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         inputsAllowed = false;
     }
 
-    public void CutsceneEnded ()
+    public void UnlockInputs ()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

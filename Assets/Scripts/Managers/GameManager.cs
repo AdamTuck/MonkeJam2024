@@ -2,12 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using DigitalRuby.WeatherMaker;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Game Properties")]
+    [SerializeField] float dayStartTime;
+    [SerializeField] float dayEndTime;
+    [SerializeField] float dayTimeSpeed;
+
     [SerializeField] private Health playerHealth;
     [SerializeField] private UIManager UIManager;
     [SerializeField] private GameObject player;
+
+    private int currentDay;
 
     [SerializeField] private LevelManager[] levels;
 
@@ -51,13 +59,16 @@ public class GameManager : MonoBehaviour
         switch (currentState)
         {
             case GameState.DayStart:
-                Morning();
+                DayStart();
                 break;
             case GameState.DayRunning:
-                RunLevel();
+                DayRunning();
                 break;
             case GameState.DayEnd:
-                CompleteLevel();
+                DayEnd();
+                break;
+            case GameState.NightUpgrade:
+                NightUpgrade();
                 break;
             case GameState.GameOver:
                 GameOver();
@@ -70,25 +81,41 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Morning ()
+    private void DayStart ()
     {
         Debug.Log("Day start");
 
         currentLevel.StartLevel();
         cutsceneEnded?.Invoke();
-        ChangeState(GameState.DayRunning, currentLevel);
+
+        WeatherController.Instance.RollRandomWeather();
+
+        WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay = dayStartTime;
+        WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
+
+        UIManager.instance.StartDaySplashScreen();
     }
 
-    private void RunLevel()
+    private void DayRunning()
     {
+        WeatherMakerDayNightCycleManagerScript.Instance.Speed = dayTimeSpeed;
+        PlayerInput.instance.UnlockInputs();
+
         Debug.Log("Level In: " + currentLevel.gameObject.name);
     }
 
-    private void CompleteLevel ()
+    private void DayEnd ()
     {
         Debug.Log("Level End: " + currentLevel.gameObject.name);
 
-        ChangeState(GameState.DayStart, levels[++currentLevelIndex]);
+        WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
+
+        ChangeState(GameState.NightUpgrade, levels[++currentLevelIndex]);
+    }
+
+    private void NightUpgrade()
+    {
+
     }
 
     private void GameOver()
@@ -123,5 +150,10 @@ public class GameManager : MonoBehaviour
     public void CutsceneEnded ()
     {
         cutsceneEnded?.Invoke();
+    }
+
+    public void BeginCurrentDay()
+    {
+        GameManager.instance.ChangeState(GameState.DayRunning, currentLevel);
     }
 }

@@ -23,5 +23,10 @@ public class PlayerToolsBehaviour : MonoBehaviour
         {
             bikeLight.SetActive(!bikeLight.activeInHierarchy);
         }
+
+        if (playerInput.escape)
+        {
+            UIManager.instance.TogglePause();
+        }
     }
 }

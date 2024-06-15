@@ -24,6 +24,11 @@ public class UIManager : MonoBehaviour
     [Header("Map Refs")]
     [SerializeField] private GameObject mapObject;
 
+    [Header("Other Refs")]
+    [SerializeField] GameObject splashScreenObj;
+    [SerializeField] CanvasGroup splashScreenBGObj;
+    [SerializeField] CanvasGroup daySpashScreenTxt;
+
     public TMP_Text txtHealth;
     public GameObject gameOverText;
     public GameObject victoryText;
@@ -175,5 +180,45 @@ public class UIManager : MonoBehaviour
             mapObject.SetActive(false);
         else
             mapObject.SetActive(true);
+    }
+
+    public void TogglePause ()
+    {
+        if (pauseScreen.activeInHierarchy)
+        {
+            pauseScreen.SetActive(false);
+            PlayerInput.instance.UnlockInputs();
+            Time.timeScale = 1;
+        }
+        else
+        {
+            pauseScreen.SetActive(true);
+            PlayerInput.instance.LockInputs();
+            Time.timeScale = 0;
+        }
+    }
+
+    public void StartDaySplashScreen()
+    {
+        StartCoroutine(AnimateIntro());
+    }
+
+    IEnumerator AnimateIntro()
+    {
+        splashScreenObj.SetActive(true);
+
+        LeanTween.alphaCanvas(splashScreenBGObj, 1f, 0);
+        LeanTween.alphaCanvas(daySpashScreenTxt, 1f, 2);
+        yield return new WaitForSeconds(3);
+
+        GameManager.instance.BeginCurrentDay();
+
+        LeanTween.alphaCanvas(splashScreenBGObj, 0f, 3);
+        yield return new WaitForSeconds(3);
+
+        LeanTween.alphaCanvas(daySpashScreenTxt, 0f, 3);
+        yield return new WaitForSeconds(3);
+
+        splashScreenObj.SetActive(false);
     }
 }
