@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d4dbdbf04c6ebf4ab9bbaaea3ca6638, type: 3}
   m_Name: WeatherMakerDayNightCycleProfile_Default
   m_EditorClassIdentifier: 
-  Speed: 0
-  NightSpeed: 0
+  Speed: 100
+  NightSpeed: 100
   UpdateInterval: 0.03
-  TimeOfDay: 32400
-  TimeOfDayLabel: 09:00 AM
+  TimeOfDay: 79200
+  TimeOfDayLabel: 10:00 PM
   Year: 2017
   Month: 3
   Day: 13

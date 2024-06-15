@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
     private LevelManager currentLevel;
     private int currentLevelIndex = 0;
 
+    [Header("References")]
+    [SerializeField] PlayerMovementBehaviour playerMovement;
+
     public UnityEvent cutsceneStarted, cutsceneEnded;
 
     public static GameManager instance;
@@ -49,6 +52,11 @@ public class GameManager : MonoBehaviour
         }
 
         playerHealth.OnDeath += GameOver;
+    }
+
+    private void Update()
+    {
+        DayNightRoutines();
     }
 
     public void ChangeState (GameState state, LevelManager level)
@@ -96,6 +104,8 @@ public class GameManager : MonoBehaviour
         WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay = dayStartTime;
         WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
 
+        currentDay++;
+        UIManager.instance.UpdateCurrentDay(currentDay.ToString());
         UIManager.instance.StartDaySplashScreen();
     }
 
@@ -113,12 +123,18 @@ public class GameManager : MonoBehaviour
 
         WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
 
-        ChangeState(GameState.NightUpgrade, levels[++currentLevelIndex]);
+        ChangeState(GameState.NightUpgrade, currentLevel);
     }
 
     private void NightUpgrade()
     {
+        ShopManager.instance.openShop();
+    }
 
+    public void EndNightUpgrade()
+    {
+        ChangeState(GameState.DayStart, levels[++currentLevelIndex]);
+        RespawnAtCheckpoint();
     }
 
     private void GameOver()
@@ -140,6 +156,7 @@ public class GameManager : MonoBehaviour
 
         playerHealth.RespawnPlayer();
         UIManager.OnRespawnUI();
+        playerMovement.ResetStats();
 
         player.transform.position = new Vector3(currentLevel.CheckpointPos().position.x, currentLevel.CheckpointPos().position.y, currentLevel.CheckpointPos().position.z);
         player.transform.rotation = Quaternion.Euler(new Vector3(currentLevel.CheckpointPos().eulerAngles.x, currentLevel.CheckpointPos().eulerAngles.y, currentLevel.CheckpointPos().eulerAngles.z));
@@ -158,5 +175,11 @@ public class GameManager : MonoBehaviour
     public void BeginCurrentDay()
     {
         GameManager.instance.ChangeState(GameState.DayRunning, currentLevel);
+    }
+
+    private void DayNightRoutines()
+    {
+        if (currentState.ToString() == "DayRunning" && WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay >= dayEndTime)
+            ChangeState(GameState.DayEnd, currentLevel);
     }
 }

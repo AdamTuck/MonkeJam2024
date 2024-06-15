@@ -118,4 +118,9 @@ public class PlayerMovementBehaviour : MonoBehaviour
     {
         return playerInput.vertical * topSpeed * moveMultiplier;
     }
+
+    public void ResetStats()
+    {
+        currentEndurance = topEndurance;
+    }
 }

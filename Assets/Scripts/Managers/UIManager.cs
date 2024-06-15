@@ -29,6 +29,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] CanvasGroup splashScreenBGObj;
     [SerializeField] CanvasGroup daySpashScreenTxt;
 
+    [SerializeField] TextMeshProUGUI currentDayTxt;
+
     public TMP_Text txtHealth;
     public GameObject gameOverText;
     public GameObject victoryText;
@@ -220,5 +222,10 @@ public class UIManager : MonoBehaviour
         yield return new WaitForSeconds(3);
 
         splashScreenObj.SetActive(false);
+    }
+
+    public void UpdateCurrentDay(string dayNum)
+    {
+        currentDayTxt.text = "DAY " + dayNum;
     }
 }

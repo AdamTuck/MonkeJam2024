@@ -18,6 +18,19 @@ public class ShopManager : MonoBehaviour
     public TextMeshProUGUI rocketEngineText;
 
     private PlayerInput playerInput;
+    public static ShopManager instance;
+
+    private void Awake()
+    {
+        if (instance && instance != this)
+        {
+            Destroy(instance);
+            return;
+        }
+
+        instance = this;
+    }
+
     public void Start()
     {
         inventory = PlayerInventory.instance;
@@ -27,7 +40,7 @@ public class ShopManager : MonoBehaviour
     public void Update()
     {
         //Update text only if shop window is open
-        if (shopWindow.enabled )
+        if (shopWindow.enabled)
         {
             scrapText.text = "Scrap: " + inventory.scrap.ToString();
             bombText.text = inventory.bomb.count + "x bombs";
@@ -37,12 +50,14 @@ public class ShopManager : MonoBehaviour
         }
     }
 
+    public void openShop()
+    {
+        shopWindow.enabled = true;
+        playerInput.LockInputs();
+    }
+
     public void closeShop()
     {
-        foreach (GameObject go in toDisable)
-        {
-            go.SetActive(true);
-        }
         shopWindow.enabled = false;
         playerInput.UnlockInputs();
     }
