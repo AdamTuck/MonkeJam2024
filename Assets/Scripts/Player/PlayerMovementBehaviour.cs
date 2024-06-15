@@ -63,7 +63,6 @@ public class PlayerMovementBehaviour : MonoBehaviour
             {
                 enduranceDegradeMultiplier = 2;
                 currentSpeed = Mathf.Clamp(currentSpeed + accelerationRate*2, 0, topSpeedSprinting);
-                Debug.Log($"sprinting: {currentSpeed}, {topSpeed}, {topSpeedSprinting}");
             }
             else
             {

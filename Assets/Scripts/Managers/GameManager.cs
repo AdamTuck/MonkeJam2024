@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
-    public enum GameState { Briefing, LevelStart, LevelIn, LevelBetween, LevelEnd, GameOver, GameEnd }
+    public enum GameState { DayStart, DayRunning, DayEnd, NightUpgrade, GameOver, GameEnd }
 
     private void Awake()
     {
@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
         if (levels.Length > 0)
         {
             //ChangeState(GameState.Briefing, levels[currentLevelIndex]);
-            ChangeState(GameState.LevelStart, levels[currentLevelIndex]);
+            ChangeState(GameState.DayStart, levels[currentLevelIndex]);
         }
 
         playerHealth.OnDeath += GameOver;
@@ -50,16 +50,13 @@ public class GameManager : MonoBehaviour
 
         switch (currentState)
         {
-            case GameState.Briefing:
-                StartBriefing();
+            case GameState.DayStart:
+                Morning();
                 break;
-            case GameState.LevelStart:
-                InitiateLevel();
-                break;
-            case GameState.LevelIn:
+            case GameState.DayRunning:
                 RunLevel();
                 break;
-            case GameState.LevelEnd:
+            case GameState.DayEnd:
                 CompleteLevel();
                 break;
             case GameState.GameOver:
@@ -73,21 +70,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void StartBriefing ()
+    private void Morning ()
     {
-        Debug.Log("Briefing started");
-        ChangeState(GameState.LevelStart, currentLevel);
-
-        cutsceneStarted?.Invoke();
-    }
-
-    private void InitiateLevel ()
-    {
-        Debug.Log("Level start");
+        Debug.Log("Day start");
 
         currentLevel.StartLevel();
         cutsceneEnded?.Invoke();
-        ChangeState(GameState.LevelIn, currentLevel);
+        ChangeState(GameState.DayRunning, currentLevel);
     }
 
     private void RunLevel()
@@ -99,7 +88,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Level End: " + currentLevel.gameObject.name);
 
-        ChangeState(GameState.LevelStart, levels[++currentLevelIndex]);
+        ChangeState(GameState.DayStart, levels[++currentLevelIndex]);
     }
 
     private void GameOver()

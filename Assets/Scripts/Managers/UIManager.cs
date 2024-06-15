@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class UIManager : MonoBehaviour
 {
@@ -13,6 +14,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private float tutorialTimeout;
     [SerializeField] private Slider staminaBar;
     [SerializeField] private TMP_Text txtSpeed;
+
+    [Header("MissionUIRefs")]
+    [SerializeField] private GameObject[] missionObjs;
+    [SerializeField] private TMP_Text[] clientNameTxt;
+    [SerializeField] private TMP_Text[] clientOrderTxt;
+    [SerializeField] private TMP_Text[] clientDeadlineTxt;
 
     public TMP_Text txtHealth;
     public GameObject gameOverText;
@@ -141,5 +148,21 @@ public class UIManager : MonoBehaviour
     public void SetSpeedNum (float speedNum)
     {
         txtSpeed.text = $"Speed: {Mathf.Round(speedNum*2.5f)} kph";
+    }
+
+    public void UpdateClientUI (int index, bool isActive, string _clientName, Texture _clientImage, string _order, float _deadline)
+    {
+        clientNameTxt[index].text = _clientName;
+        clientOrderTxt[index].text = _order;
+        clientDeadlineTxt[index].text = "" + TimeSpan.FromSeconds(_deadline).ToString("mm\\:ss");
+
+        missionObjs[index].GetComponent<RawImage>().texture = _clientImage;
+
+        missionObjs[index].SetActive(isActive);
+    }
+
+    public void UpdateClientUI(int index, bool isActive)
+    {
+        missionObjs[index].SetActive(isActive);
     }
 }
