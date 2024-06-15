@@ -12,8 +12,10 @@ public class PlayerInput : MonoBehaviour
     public bool sprint { get; private set; }
     public bool jump { get; private set; }
     public bool interact { get; private set; }
+    public bool flashlight { get; private set; }
     public bool leftBtn { get; private set; }
     public bool rightBtn { get; private set; }
+    public bool tab { get; private set; }
     public bool escape { get; private set; }
     public bool weapon1Pressed { get; private set; }
     public bool weapon2Pressed { get; private set; }
@@ -61,10 +63,12 @@ public class PlayerInput : MonoBehaviour
             sprint = sprint || Input.GetButton("Sprint");
             jump = jump || Input.GetButtonDown("Jump");
             interact = interact || Input.GetKeyDown(KeyCode.E);
+            flashlight = flashlight || Input.GetKeyDown(KeyCode.F);
 
             leftBtn = leftBtn || Input.GetButtonDown("Fire1");
             rightBtn = rightBtn || Input.GetButtonDown("Fire2");
 
+            tab = tab || Input.GetKeyDown(KeyCode.Tab);
             escape = escape || Input.GetKeyDown(KeyCode.Escape);
 
             weapon1Pressed = weapon1Pressed || Input.GetKeyDown(KeyCode.Alpha1);
@@ -88,10 +92,12 @@ public class PlayerInput : MonoBehaviour
         sprint = false;
         jump = false;
         interact = false;
+        flashlight = false;
 
         leftBtn = false;
         rightBtn = false;
 
+        tab = false;
         escape = false;
 
         weapon1Pressed = false;

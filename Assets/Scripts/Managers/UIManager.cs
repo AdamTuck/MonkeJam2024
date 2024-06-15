@@ -21,6 +21,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text[] clientOrderTxt;
     [SerializeField] private TMP_Text[] clientDeadlineTxt;
 
+    [Header("Map Refs")]
+    [SerializeField] private GameObject mapObject;
+
     public TMP_Text txtHealth;
     public GameObject gameOverText;
     public GameObject victoryText;
@@ -164,5 +167,13 @@ public class UIManager : MonoBehaviour
     public void UpdateClientUI(int index, bool isActive)
     {
         missionObjs[index].SetActive(isActive);
+    }
+
+    public void ToggleMapScreen()
+    {
+        if (mapObject.activeInHierarchy)
+            mapObject.SetActive(false);
+        else
+            mapObject.SetActive(true);
     }
 }
