@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2df482c6b2799f644925375aa4e4dac7, type: 3}
+  m_Name: Shotgun
+  m_EditorClassIdentifier: 
+  count: 9
+  cost: 10
+  itemCooldown: 0
+  spawnObject: {fileID: 100004, guid: 82019e923dca94848916b96b8f98a352, type: 3}
+  spawnOffset: {x: 0.5, y: 1, z: 2}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 512

@@ -85,6 +85,9 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Level start");
 
+        //DEBUG
+        PlayerInventory.instance.shotgunShell.count = 10;
+
         currentLevel.StartLevel();
         cutsceneEnded?.Invoke();
         ChangeState(GameState.LevelIn, currentLevel);
