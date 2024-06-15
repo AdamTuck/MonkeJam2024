@@ -26,9 +26,9 @@ public class ShootInteractor : Interact
             currentWeapon = new BulletShootStrategy(this);
 
         // Switching weapons
-        if (playerInput.weapon1Pressed)
+        if (playerInput.itemWheelDown)
             currentWeapon = new BulletShootStrategy(this);
-        if (playerInput.weapon2Pressed)
+        if (playerInput.itemWheelUp)
             currentWeapon = new RocketShootStrategy(this);
 
         // Check for Shoot
