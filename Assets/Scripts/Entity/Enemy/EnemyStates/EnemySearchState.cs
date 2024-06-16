@@ -23,7 +23,7 @@ public class EnemySearchState : EnemyState
     public override void OnStateUpdate()
     {
         enemy.roamTimer += Time.deltaTime;
-        enemy.searchTimer += Time.deltaTime;
+        /*enemy.searchTimer += Time.deltaTime;
 
         if (enemy.searchTimer >= enemy.searchTimeout)
         {
@@ -31,14 +31,14 @@ public class EnemySearchState : EnemyState
             enemy.searchTimer = 0;
             enemy.ChangeState(new EnemyPatrolState(enemy));
             return;
-        }
+        }*/
 
         if (enemy.roamTimer >= enemy.roamFrequency)
         {
             enemy.agent.SetDestination(RandomNavmeshLocation(enemy.roamRadius));
             enemy.roamTimer = 0;
         }
-
+        
         if (!enemy.agent.pathPending)
         {
             if (enemy.agent.remainingDistance <= enemy.agent.stoppingDistance)

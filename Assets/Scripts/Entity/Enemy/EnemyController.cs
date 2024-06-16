@@ -29,7 +29,7 @@ public class EnemyController : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
 
         // Default state (Patrolling)
-        currentState = new EnemyPatrolState(this);
+        currentState = new EnemySearchState(this);
         currentState.OnStateEnter();
     }
 
