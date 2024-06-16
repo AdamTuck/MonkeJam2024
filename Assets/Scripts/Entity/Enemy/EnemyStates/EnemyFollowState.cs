@@ -6,7 +6,7 @@ public class EnemyFollowState : EnemyState
 {
     float distanceToPlayer;
 
-    public EnemyFollowState(EnemyController _enemy) : base(_enemy)
+    public EnemyFollowState(EnemyController _enemy, Animator _animator) : base(_enemy, _animator)
     {
 
     }
@@ -14,6 +14,8 @@ public class EnemyFollowState : EnemyState
     public override void OnStateEnter()
     {
         Debug.Log("Begin Following");
+        animator.SetBool("Running", true);
+        animator.SetBool("Idle", false);
     }
 
     public override void OnStateExit()
@@ -29,13 +31,13 @@ public class EnemyFollowState : EnemyState
 
             if (distanceToPlayer > enemy.enemyAggroRange)
             {
-                enemy.ChangeState(new EnemySearchState(enemy));
+                enemy.ChangeState(new EnemySearchState(enemy, animator));
                 return;
             }
 
             if (distanceToPlayer < enemy.enemyAttackRange)
             {
-                enemy.ChangeState(new EnemyAttackState(enemy));
+                enemy.ChangeState(new EnemyAttackState(enemy, animator));
                 return;
             }
 
@@ -43,7 +45,7 @@ public class EnemyFollowState : EnemyState
         }
         else
         {
-            enemy.ChangeState(new EnemySearchState(enemy));
+            enemy.ChangeState(new EnemySearchState(enemy, animator));
             return;
         }
     }

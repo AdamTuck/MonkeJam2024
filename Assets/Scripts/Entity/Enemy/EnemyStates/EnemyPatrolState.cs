@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ public class EnemyPatrolState : EnemyState
 {
     int currentTarget = 0;
 
-    public EnemyPatrolState (EnemyController _enemy) : base(_enemy)
+    public EnemyPatrolState (EnemyController _enemy, Animator _animator) : base(_enemy, _animator)
     {
 
     }
@@ -15,6 +16,7 @@ public class EnemyPatrolState : EnemyState
     {
         enemy.agent.destination = enemy.patrolPoints[currentTarget].position;
         Debug.Log("Enemy is patrolling");
+        throw new InvalidOperationException("Enemy entered patrolling state which shouldn't happen");
     }
 
     public override void OnStateExit()
@@ -42,7 +44,7 @@ public class EnemyPatrolState : EnemyState
                 enemy.player = hit.transform;
                 enemy.agent.destination = enemy.player.position;
 
-                enemy.ChangeState(new EnemyFollowState(enemy));
+                enemy.ChangeState(new EnemyFollowState(enemy, animator));
                 return;
             }
         }
