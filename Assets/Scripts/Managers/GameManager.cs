@@ -111,7 +111,7 @@ public class GameManager : MonoBehaviour
         UIManager.instance.UpdateCurrentDay(currentDay.ToString());
         UIManager.instance.StartDaySplashScreen();
 
-        SoundManager.instance.SetAmbience("dayMusic");
+        AudioManager.instance.SetAmbience("dayMusic");
     }
 
     private void DayRunning()
@@ -124,7 +124,7 @@ public class GameManager : MonoBehaviour
 
     private void StormWallRace()
     {
-        SoundManager.instance.SetAmbience("storm");
+        AudioManager.instance.SetAmbience("storm");
         StormWall.instance.ShrinkWall();
     }
 
@@ -136,7 +136,7 @@ public class GameManager : MonoBehaviour
         MissionManager.instance.ClearCurrentMissions();
         WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
 
-        SoundManager.instance.SetAmbience("shop");
+        AudioManager.instance.SetAmbience("shop");
         ChangeState(GameState.NightUpgrade, currentLevel);
     }
 
