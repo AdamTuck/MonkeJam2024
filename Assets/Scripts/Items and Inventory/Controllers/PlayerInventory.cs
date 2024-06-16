@@ -11,7 +11,7 @@ public class PlayerInventory : MonoBehaviour
     public int shotgunShellCount;
     public int bombCount;
     public int itemXCount;*/
-    [Header("Prefabs")]
+    [Header("Items")]
     public IUseableItem bomb;
     public IUseableItem shotgunShell;
     public IUseableItem jumpPad;

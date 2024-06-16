@@ -8,7 +8,6 @@ public class ShotgunItem : IUseableItem
     public LayerMask enemyLayer;
     public override void Use()
     {
-        //setCount(-1);
         count--;
         playerTransform = PlayerItemInteractor.instance.itemPos;
 
@@ -20,7 +19,7 @@ public class ShotgunItem : IUseableItem
         
         //Boxcast and delete hit object
         RaycastHit hit;
-        if (Physics.BoxCast(playerTransform.position, new Vector3(5, 5, 5), playerTransform.forward, out hit, playerTransform.rotation, 10f, enemyLayer))
+        if (Physics.BoxCast(playerTransform.position - playerTransform.forward, new Vector3(5, 5, 5), playerTransform.forward, out hit, playerTransform.rotation, 10f, enemyLayer))
         {
             //Put die function of enemy here
             Destroy(hit.transform.gameObject);

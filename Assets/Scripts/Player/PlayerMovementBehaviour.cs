@@ -107,7 +107,7 @@ public class PlayerMovementBehaviour : MonoBehaviour
         if (rocketEngine)
         { 
             //When rocketboosting you constantly move at topSpeed but spend no stamina
-            currentSpeed = topSpeedSprinting;
+            currentSpeed = topSpeedSprinting + 8;
             enduranceDegradeMultiplier = 0;
         }
         characterController.Move(transform.forward * currentSpeed * Time.deltaTime);

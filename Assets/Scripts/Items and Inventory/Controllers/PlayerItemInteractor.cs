@@ -18,6 +18,7 @@ public class PlayerItemInteractor : MonoBehaviour
     public int itemCooldownTimer;
 
     public Transform itemPos;
+    public GameObject shotgunModel;
 
     private void Awake()
     {
@@ -47,7 +48,7 @@ public class PlayerItemInteractor : MonoBehaviour
         {
             itemOnCooldown = true;
             UseItem();
-            Invoke(nameof(resetItemCooldown), 1);
+            Invoke(nameof(resetItemCooldown), itemCooldownTimer);
         }
         //Swap weapons
         if (playerInput.itemWheelUp)
@@ -67,6 +68,7 @@ public class PlayerItemInteractor : MonoBehaviour
         if (selectedItem.count > 0)
         {
             selectedItem.Use();
+            uiManager.updateWeaponAmount(selectedItem);
         }
         else
         {
@@ -76,6 +78,12 @@ public class PlayerItemInteractor : MonoBehaviour
 
     private void ItemUp()
     {
+        //Put shotgun away
+        if (selectedItem == PlayerInventory.instance.shotgunShell)
+        {
+            shotgunModel.SetActive(false);
+        }
+
         IUseableItem nextItem;
         if (items.IndexOf(selectedItem) < items.Count - 1)
         {
@@ -86,24 +94,35 @@ public class PlayerItemInteractor : MonoBehaviour
             nextItem = items[0];
         }
         Debug.Log("Changed to " + nextItem);
-        Sprite prev = selectedItem.sprite;
-        Sprite main = nextItem.sprite;
-        Sprite next;
+        IUseableItem prev = selectedItem;
+        IUseableItem main = nextItem;
+        IUseableItem next;
         if (items.IndexOf(nextItem) < items.Count - 1)
         {
-            next = items[items.IndexOf(nextItem) + 1].sprite;
+            next = items[items.IndexOf(nextItem) + 1];
         }
         else
         {
-            next = items[0].sprite;
+            next = items[0];
         }
 
         selectedItem = nextItem;
+        //Pull shotgun out
+        if (nextItem == PlayerInventory.instance.shotgunShell)
+        {
+            shotgunModel.SetActive(true);
+        }
         uiManager.updateWeapons(main, next, prev);
         
     }
     private void ItemDown()
     {
+        //Put shotgun away
+        if (selectedItem == PlayerInventory.instance.shotgunShell)
+        {
+            shotgunModel.SetActive(false);
+        }
+
         IUseableItem nextItem;
         if (items.IndexOf(selectedItem) > 0)
         {
@@ -114,16 +133,22 @@ public class PlayerItemInteractor : MonoBehaviour
             nextItem = items[items.Count - 1];
         }
         Debug.Log("Changed to " + nextItem);
-        Sprite prev = selectedItem.sprite;
-        Sprite main = nextItem.sprite;
-        Sprite next;
+        IUseableItem prev = selectedItem;
+        IUseableItem main = nextItem;
+        IUseableItem next;
         if (items.IndexOf(nextItem) > 0)
         {
-            next = items[items.IndexOf(nextItem) - 1].sprite;
+            next = items[items.IndexOf(nextItem) - 1];
         }
         else
         {
-            next = items[items.Count - 1].sprite;
+            next = items[items.Count - 1];
+        }
+
+        //Pull shotgun out
+        if (nextItem == PlayerInventory.instance.shotgunShell)
+        {
+            shotgunModel.SetActive(true);
         }
 
         selectedItem = nextItem;

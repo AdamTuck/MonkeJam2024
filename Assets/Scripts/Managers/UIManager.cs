@@ -26,6 +26,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Weapon Wheel")]
     [SerializeField] Image mainWeapon;
+    [SerializeField] TextMeshProUGUI mainAmount;
     [SerializeField] Image nextWeapon;
     [SerializeField] Image prevWeapon;
 
@@ -230,11 +231,16 @@ public class UIManager : MonoBehaviour
 
 
 
-    public void updateWeapons(Sprite main, Sprite next, Sprite prev)
+    public void updateWeapons(IUseableItem main, IUseableItem next, IUseableItem prev)
     {
-        mainWeapon.sprite = main;
-        nextWeapon.sprite = next;
-        prevWeapon.sprite = prev;
+        mainWeapon.sprite = main.sprite;
+        nextWeapon.sprite = next.sprite;
+        prevWeapon.sprite = prev.sprite;
+        updateWeaponAmount(main);
+    }
+    public void updateWeaponAmount(IUseableItem main)
+    {
+        mainAmount.text = main.count + " x";
     }
 
 
