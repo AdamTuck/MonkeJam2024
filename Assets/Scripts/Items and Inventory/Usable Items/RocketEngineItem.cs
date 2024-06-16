@@ -6,12 +6,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Rocket Engine", menuName = "ScriptableObjects / Useable Items / Rocket Engine", order = 4)]
 public class RocketEngineItem : IUseableItem
 {
-    
-
     public override void Use()
     {
         count--;
         Debug.Log("Used Rocket Engine");
-        PlayerInventory.instance.speedMultiplier = 2;
+        PlayerMovementBehaviour.instance.rocketEngine = true;
+        PlayerItemInteractor.instance.ResetRocketBoost();
     }
 }
