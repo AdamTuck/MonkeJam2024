@@ -10,14 +10,13 @@ public class ShotgunItem : IUseableItem
     {
         //setCount(-1);
         count--;
-        Debug.Log("Used Shotgun");
-        Transform playerTransform = PlayerItemInteractor.instance.transform;
+        playerTransform = PlayerItemInteractor.instance.itemPos;
 
         //Shooting animation spawn
         Vector3 offsetFinal;
         Quaternion rotation = Quaternion.LookRotation(playerTransform.forward);
         offsetFinal = rotation * spawnOffset;
-        GameObject created = Instantiate(spawnObject, playerTransform.position + offsetFinal, playerTransform.rotation);
+        GameObject created = Instantiate(spawnObject, playerTransform.position + offsetFinal, playerTransform.rotation, PlayerMovementBehaviour.instance.transform);
         
         //Boxcast and delete hit object
         RaycastHit hit;

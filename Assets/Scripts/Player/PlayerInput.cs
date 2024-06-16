@@ -12,8 +12,10 @@ public class PlayerInput : MonoBehaviour
     public bool sprint { get; private set; }
     public bool jump { get; private set; }
     public bool interact { get; private set; }
+    public bool flashlight { get; private set; }
     public bool leftBtn { get; private set; }
     public bool rightBtn { get; private set; }
+    public bool tab { get; private set; }
     public bool escape { get; private set; }
     public bool itemWheelDown { get; private set; }
     public bool itemWheelUp { get; private set; }
@@ -63,9 +65,12 @@ public class PlayerInput : MonoBehaviour
             sprint = sprint || Input.GetButton("Sprint");
             jump = jump || Input.GetButtonDown("Jump");
             interact = interact || Input.GetKeyDown(KeyCode.E);
+            flashlight = flashlight || Input.GetKeyDown(KeyCode.F);
 
             leftBtn = leftBtn || Input.GetButtonDown("Fire1");
             rightBtn = rightBtn || Input.GetButtonDown("Fire2");
+
+            tab = tab || Input.GetKeyDown(KeyCode.Tab);
 
             escape = escape || Input.GetKeyDown(KeyCode.Escape);
 
@@ -76,6 +81,8 @@ public class PlayerInput : MonoBehaviour
 
             openCloseShop = openCloseShop || Input.GetKeyDown(KeyCode.P);
         }
+
+        escape = escape || Input.GetKeyDown(KeyCode.Escape);
     }
 
     void ClearInputs ()
@@ -92,10 +99,12 @@ public class PlayerInput : MonoBehaviour
         sprint = false;
         jump = false;
         interact = false;
+        flashlight = false;
 
         leftBtn = false;
         rightBtn = false;
 
+        tab = false;
         escape = false;
 
         itemWheelDown = false;
@@ -106,14 +115,14 @@ public class PlayerInput : MonoBehaviour
         openCloseShop = false;
     }
 
-    public void CutsceneStarted ()
+    public void LockInputs ()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         inputsAllowed = false;
     }
 
-    public void CutsceneEnded ()
+    public void UnlockInputs ()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

@@ -21,6 +21,6 @@ public class PlayerTurnBehaviour : MonoBehaviour
 
     void RotatePlayer ()
     {
-        transform.Rotate(Vector3.up * turnSpeed * Time.deltaTime * playerInput.mouseX);
+        transform.Rotate(Vector3.up * turnSpeed * Time.deltaTime * playerInput.horizontal);
     }
 }

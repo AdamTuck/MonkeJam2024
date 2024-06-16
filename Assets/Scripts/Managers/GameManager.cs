@@ -2,12 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using DigitalRuby.WeatherMaker;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("Game Properties")]
+    [SerializeField] float dayStartTime;
+    [SerializeField] float dayEndTime;
+    [SerializeField] float dayTimeSpeed;
+
     [SerializeField] private Health playerHealth;
     [SerializeField] private UIManager UIManager;
     [SerializeField] private GameObject player;
+
+    private int currentDay;
 
     [SerializeField] private LevelManager[] levels;
 
@@ -19,7 +27,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
-    public enum GameState { Briefing, LevelStart, LevelIn, LevelBetween, LevelEnd, GameOver, GameEnd }
+    public enum GameState { DayStart, DayRunning, DayEnd, NightUpgrade, GameOver, GameEnd }
 
     private void Awake()
     {
@@ -37,7 +45,7 @@ public class GameManager : MonoBehaviour
         if (levels.Length > 0)
         {
             //ChangeState(GameState.Briefing, levels[currentLevelIndex]);
-            ChangeState(GameState.LevelStart, levels[currentLevelIndex]);
+            ChangeState(GameState.DayStart, levels[currentLevelIndex]);
         }
 
         playerHealth.OnDeath += GameOver;
@@ -50,17 +58,17 @@ public class GameManager : MonoBehaviour
 
         switch (currentState)
         {
-            case GameState.Briefing:
-                StartBriefing();
+            case GameState.DayStart:
+                DayStart();
                 break;
-            case GameState.LevelStart:
-                InitiateLevel();
+            case GameState.DayRunning:
+                DayRunning();
                 break;
-            case GameState.LevelIn:
-                RunLevel();
+            case GameState.DayEnd:
+                DayEnd();
                 break;
-            case GameState.LevelEnd:
-                CompleteLevel();
+            case GameState.NightUpgrade:
+                NightUpgrade();
                 break;
             case GameState.GameOver:
                 GameOver();
@@ -73,36 +81,44 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void StartBriefing ()
+    private void DayStart ()
     {
-        Debug.Log("Briefing started");
-        ChangeState(GameState.LevelStart, currentLevel);
-
-        cutsceneStarted?.Invoke();
-    }
-
-    private void InitiateLevel ()
-    {
-        Debug.Log("Level start");
+        Debug.Log("Day start");
 
         //DEBUG
         PlayerInventory.instance.shotgunShell.count = 10;
 
         currentLevel.StartLevel();
         cutsceneEnded?.Invoke();
-        ChangeState(GameState.LevelIn, currentLevel);
+
+        WeatherController.Instance.RollRandomWeather();
+
+        WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay = dayStartTime;
+        WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
+
+        UIManager.instance.StartDaySplashScreen();
     }
 
-    private void RunLevel()
+    private void DayRunning()
     {
+        WeatherMakerDayNightCycleManagerScript.Instance.Speed = dayTimeSpeed;
+        PlayerInput.instance.UnlockInputs();
+
         Debug.Log("Level In: " + currentLevel.gameObject.name);
     }
 
-    private void CompleteLevel ()
+    private void DayEnd ()
     {
         Debug.Log("Level End: " + currentLevel.gameObject.name);
 
-        ChangeState(GameState.LevelStart, levels[++currentLevelIndex]);
+        WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
+
+        ChangeState(GameState.NightUpgrade, levels[++currentLevelIndex]);
+    }
+
+    private void NightUpgrade()
+    {
+
     }
 
     private void GameOver()
@@ -137,5 +153,10 @@ public class GameManager : MonoBehaviour
     public void CutsceneEnded ()
     {
         cutsceneEnded?.Invoke();
+    }
+
+    public void BeginCurrentDay()
+    {
+        GameManager.instance.ChangeState(GameState.DayRunning, currentLevel);
     }
 }

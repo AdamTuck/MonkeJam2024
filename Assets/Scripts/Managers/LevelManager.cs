@@ -24,7 +24,7 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
-            GameManager.instance.ChangeState(GameManager.GameState.LevelEnd, this);
+            GameManager.instance.ChangeState(GameManager.GameState.DayEnd, this);
         }
     }
 

@@ -8,92 +8,180 @@ public class ShopManager : MonoBehaviour
 {
     private PlayerInventory inventory;
     public Canvas shopWindow;
-    public List<GameObject> toDisable;
+
+    [Header("Cost of bike upgrades")]
+    public int staminaCost;
+    public int accelerationCost;
+    public int decelerationCost;
+    public int armorCost;
 
     [Header("Text to update")]
     public TextMeshProUGUI scrapText;
+    public TextMeshProUGUI cannotBuyMessage;
     public TextMeshProUGUI bombText;
     public TextMeshProUGUI shotgunText;
     public TextMeshProUGUI jumppadText;
     public TextMeshProUGUI rocketEngineText;
+    public TextMeshProUGUI staminaText;
+    public TextMeshProUGUI accelerationText;
+    public TextMeshProUGUI brakesText;
+    public TextMeshProUGUI armorText;
 
     private PlayerInput playerInput;
+    [Header("Refrences")]
+    public GameObject player;
+    private PlayerMovementBehaviour playerMovement;
+    private Health playerHealth;
+
     public void Start()
     {
         inventory = PlayerInventory.instance;
         playerInput = PlayerInput.instance;
+        playerMovement = player.GetComponent<PlayerMovementBehaviour>();
+        playerHealth = player.GetComponent<Health>();
         shopWindow.enabled = false;
+
     }
     public void Update()
     {
         if (playerInput.openCloseShop)
         {
-            foreach (GameObject go in toDisable)
-            {
-                go.SetActive(false);
-            }
             shopWindow.enabled = true;
-            playerInput.CutsceneStarted();
+            playerInput.LockInputs();
         }
 
         //Update text only if shop window is open
         if (shopWindow.enabled )
         {
-            scrapText.text = "Scrap: " + inventory.scrap.ToString();
+            scrapText.text = "Scrap: " + inventory.scrap;
             bombText.text = inventory.bomb.count + "x bombs";
             shotgunText.text = inventory.shotgunShell.count + "x shotgun shells";
             jumppadText.text = inventory.jumpPad.count + "x jump pads";
             rocketEngineText.text = inventory.rocketEngine.count + "x rocket engines";
+            //Bike upgrades
+            staminaText.text = "Stamina " + playerMovement.topEndurance;
+            accelerationText.text = "Acceleration " + playerMovement.accelerationRate * 100;
+            brakesText.text =  "Brakes " + playerMovement.decelerationRate * 100;
+            armorText.text = "Armor " + playerHealth.maxHealth;
         }
     }
 
     public void closeShop()
     {
-        foreach (GameObject go in toDisable)
-        {
-            go.SetActive(true);
-        }
         shopWindow.enabled = false;
-        playerInput.CutsceneEnded();
+        playerInput.UnlockInputs();
+    }
+
+    private void CannotBuy()
+    {
+        //Display cannot buy message
+        cannotBuyMessage.enabled = true;
+        Invoke(nameof(ResetCannotBuyMessage), 3);
+    }
+    private void ResetCannotBuyMessage()
+    {
+        cannotBuyMessage.enabled = false;
     }
 
     //----------------------------- ITEM SHOP -----------------------------//
     public void buyBomb()
     {
-        inventory.scrap -= inventory.bomb.cost;
-        inventory.bomb.count++;
+        if (inventory.scrap - inventory.bomb.cost >= 0)
+        {
+            inventory.scrap -= inventory.bomb.cost;
+            inventory.bomb.count++;
+        }
+        else
+        {
+            CannotBuy();
+        }
     }
     public void buyShotgunShell()
     {
-        inventory.scrap -= inventory.shotgunShell.cost;
-        inventory.shotgunShell.count++;
+        if (inventory.scrap - inventory.shotgunShell.cost >= 0)
+        {
+            inventory.scrap -= inventory.shotgunShell.cost;
+            inventory.shotgunShell.count++;
+        }
+        else
+        {
+            CannotBuy();
+        }
     }
     public void buyJumpPad()
     {
-        inventory.scrap -= inventory.jumpPad.cost;
-        inventory.jumpPad.count++;
+        if (inventory.scrap - inventory.jumpPad.cost >= 0)
+        {
+            inventory.scrap -= inventory.jumpPad.cost;
+            inventory.jumpPad.count++;
+        }
+        else
+        {
+            CannotBuy();
+        }
     }
     public void buyRocketEngine()
     {
-        inventory.scrap -= inventory.rocketEngine.cost;
-        inventory.rocketEngine.count++;
+        if (inventory.scrap - inventory.rocketEngine.cost >= 0)
+        {
+            inventory.scrap -= inventory.rocketEngine.cost;
+            inventory.rocketEngine.count++;
+        }
+        else
+        {
+            CannotBuy();
+        }
     }
 
     //----------------------------- BIKE SHOP -----------------------------//
     public void buyBike1()
     {
-
+        //Top speed or stamina upgrade
+        if (inventory.scrap - staminaCost >= 0)
+        {
+            inventory.scrap -= staminaCost;
+            playerMovement.topEndurance += 10;
+        }
+        else
+        {
+            CannotBuy();
+        }
+        
     }
     public void buyBike2()
     {
-
+        if (inventory.scrap - accelerationCost >= 0)
+        {
+            inventory.scrap -= accelerationCost;
+            playerMovement.accelerationRate += 0.01f;
+        }
+        else
+        {
+            CannotBuy();
+        }
     }
     public void buyBike3()
     {
-
+        if (inventory.scrap - decelerationCost >= 0)
+        {
+            inventory.scrap -= decelerationCost;
+            playerMovement.decelerationRate += 0.01f;
+        }
+        else
+        {
+            CannotBuy();
+        }
     }
     public void buyBike4()
     {
-
+        if (inventory.scrap - armorCost >= 0)
+        {
+            inventory.scrap -= armorCost;
+            playerHealth.maxHealth += 50;
+        }
+        else
+        {
+            CannotBuy();
+        }
     }
 }
