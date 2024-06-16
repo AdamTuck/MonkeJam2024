@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 [RequireComponent(typeof (CharacterController))]
 public class PlayerMovementBehaviour : MonoBehaviour
@@ -15,6 +16,8 @@ public class PlayerMovementBehaviour : MonoBehaviour
     [SerializeField] public float decelerationRate;
     [SerializeField] private float momentumDegradeRate;
     [SerializeField] private float gravity = -9.81f;
+    [SerializeField] private AudioSource cycleSound;
+    [SerializeField] private AudioSource sprintSound;
 
     [Header("Player Stamina")]
     [SerializeField] private float sprintMultiplier;
@@ -59,6 +62,26 @@ public class PlayerMovementBehaviour : MonoBehaviour
         GroundedCheck();
         MovePlayer();
         EnduranceDegrade();
+        if (currentSpeed > 0)
+        {
+            //play sound
+            cycleSound.enabled = true;
+            if (currentSpeed > topSpeed)
+            {
+                cycleSound.enabled = false;
+                sprintSound.enabled = true;
+            }
+            else
+            {
+                cycleSound.enabled = true;
+                sprintSound.enabled = false;
+            }
+        }
+        else
+        {
+            cycleSound.enabled = false;
+            sprintSound.enabled = false;
+        }
     }
     
     void EnduranceDegrade()
