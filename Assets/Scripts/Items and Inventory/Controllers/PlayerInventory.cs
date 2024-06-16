@@ -45,6 +45,7 @@ public class PlayerInventory : MonoBehaviour
             { bomb },
             { shotgunShell },
             { rocketEngine },
+            { jumpPad }
             
         };
 

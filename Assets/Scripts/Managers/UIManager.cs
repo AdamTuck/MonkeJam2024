@@ -31,10 +31,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] Image nextWeapon;
     [SerializeField] Image prevWeapon;
 
-    [Header("Main Menu")]
-    [SerializeField] GameObject mainMenuScreen;
-    [SerializeField] GameObject optionsScreen;
-
     [Header("Other Refs")]
     [SerializeField] GameObject splashScreenObj;
     [SerializeField] CanvasGroup splashScreenBGObj;
@@ -264,21 +260,6 @@ public class UIManager : MonoBehaviour
     public void updateWeaponAmount(IUseableItem main)
     {
         mainAmount.text = main.count + " x";
-    }
-
-    public void StartGame()
-    {
-        mainMenuScreen.SetActive(false);
-        //GameManager.instance.ChangeState(GameManager.GameState.DayStart,);
-    }
-
-    public void OpenOptions()
-    {
-        optionsScreen.SetActive(true);
-    }
-    public void CloseOptions()
-    {
-        optionsScreen.SetActive(false);
     }
 
 }

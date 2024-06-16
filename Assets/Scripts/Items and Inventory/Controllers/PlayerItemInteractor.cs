@@ -38,6 +38,7 @@ public class PlayerItemInteractor : MonoBehaviour
         uiManager = UIManager.instance;
         selectedItem = items[0];
         itemOnCooldown = false;
+        shotgunModel.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -67,7 +68,18 @@ public class PlayerItemInteractor : MonoBehaviour
         //Items can only be used if there are enough of them
         if (selectedItem.count > 0)
         {
-            selectedItem.Use();
+            if (selectedItem == PlayerInventory.instance.jumpPad)
+            {
+                //Do extra ground check
+                if (PlayerMovementBehaviour.instance.isGrounded)
+                {
+                    selectedItem.Use();
+                }
+            }
+            else
+            {
+                selectedItem.Use();
+            }
             uiManager.updateWeaponAmount(selectedItem);
         }
         else
