@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class MissionManager : MonoBehaviour
 {
@@ -13,6 +14,10 @@ public class MissionManager : MonoBehaviour
     [SerializeField] private MissionType[] missionTypes;
     [SerializeField] private Client[] clients;
     [SerializeField] private GameObject foodBasketObj;
+
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private List<AudioClip> sounds;
 
     private List<Mission> currentMissions = new List<Mission>();
     private float missionTimer;
@@ -156,6 +161,8 @@ public class MissionManager : MonoBehaviour
                 destinations[currentMissions[i].client.clientLocationIndex].GetComponent<ObjectiveDoor>().ShowWaypoint();
             }
         }
+        audioSource.clip = sounds[0];
+        audioSource.Play();
 
         UpdateMissionUI();
     }
@@ -170,6 +177,8 @@ public class MissionManager : MonoBehaviour
                 CompleteMission(i);
             }
         }
+        audioSource.clip = sounds[1];
+        audioSource.Play();
 
         UpdateMissionUI();
     }

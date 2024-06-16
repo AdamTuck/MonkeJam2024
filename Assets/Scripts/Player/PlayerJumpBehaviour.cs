@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerMovementBehaviour))]
 public class PlayerJumpBehaviour : Interact
 {
+
+
     [Header("Player Jump")]
     [SerializeField] private float jumpVelocity;
 

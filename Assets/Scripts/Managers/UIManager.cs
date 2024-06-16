@@ -33,10 +33,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] Image nextWeapon;
     [SerializeField] Image prevWeapon;
 
-    [Header("Main Menu")]
-    [SerializeField] GameObject mainMenuScreen;
-    [SerializeField] GameObject optionsScreen;
-
     [Header("Other Refs")]
     [SerializeField] GameObject splashScreenObj;
     [SerializeField] CanvasGroup splashScreenBGObj;
@@ -269,23 +265,4 @@ public class UIManager : MonoBehaviour
         mainAmount.text = main.count + " x";
     }
 
-    public void StartGame()
-    {
-        mainMenuScreen.SetActive(false);
-        //GameManager.instance.ChangeState(GameManager.GameState.DayStart,);
-    }
-
-    public void OpenOptions()
-    {
-        optionsScreen.SetActive(true);
-    }
-    public void CloseOptions()
-    {
-        optionsScreen.SetActive(false);
-    }
-
-    public void UpdateScrap ()
-    {
-        txtScrap.text = "Scrap: " + PlayerInventory.instance.scrap;
-    }
 }

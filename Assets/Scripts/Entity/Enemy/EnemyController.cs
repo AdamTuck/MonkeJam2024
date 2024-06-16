@@ -20,11 +20,17 @@ public class EnemyController : MonoBehaviour
 
     // Roaming
     [Header("Searching")]
-    public float idleTime;
-    public float roamTime;
-    public float roamRadius;
-    public float searchTimeout;
-     public float roamTimer, searchTimer, idleTimer;
+    [SerializeField] public float idleTime;
+    [SerializeField] public float roamTime;
+    [SerializeField] public float roamRadius;
+    [SerializeField] public float searchTimeout;
+    [HideInInspector] public float roamTimer, searchTimer, idleTimer;
+
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private List<AudioClip> sounds;
+    [SerializeField] private float audioTime;
+    private float audioTimer = 0;
 
     void Start()
     {
@@ -37,6 +43,14 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
+        audioTimer += Time.deltaTime;
+        if (audioTimer > audioTime)
+        {
+            int random = Random.Range(0, sounds.Count-1);
+            audioSource.clip = sounds[random];
+            audioSource.Play();
+            audioTimer = 0;
+        }
         currentState.OnStateUpdate();
     }
 
