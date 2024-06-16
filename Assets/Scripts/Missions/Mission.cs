@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Mission
 {
-<<<<<<< HEAD
     public bool foodPickedUp;
 
     public Client client;
@@ -21,20 +20,4 @@ public class Mission
         missionLength = _missionLength;
         scrapReward = _scrapReward;
     }
-=======
-    public Client client;
-    public string missionName;
-    public string missionDescription;
-    public float missionLength;
-
-    public Mission (Client _client, string _missionType, string _missionDescription, float _missionLength)
-    {
-        client = _client;
-        missionName = _missionType;
-        missionDescription = _missionDescription;
-        missionLength = _missionLength;
-    }
-
-    // Client, StartPoint, Destination
->>>>>>> BurryBurstBranch
 }

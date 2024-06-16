@@ -9,7 +9,7 @@ public class EnemyAttackState : EnemyState
     Health playerHealth;
     float damagePerSecond = 20f;
 
-    public EnemyAttackState(EnemyController _enemy, Animator _animator) : base(_enemy, _animator) 
+    public EnemyAttackState(EnemyController _enemy) : base(_enemy) 
     {
         playerHealth = _enemy.player.GetComponentInParent<Health>();
     }
@@ -34,14 +34,14 @@ public class EnemyAttackState : EnemyState
 
             if (distanceToPlayer > enemy.enemyAttackRange)
             {
-                enemy.ChangeState(new EnemyFollowState(enemy, animator));
+                enemy.ChangeState(new EnemyFollowState(enemy));
             }
 
             enemy.agent.destination = enemy.player.position;
         }
         else
         {
-            enemy.ChangeState(new EnemyPatrolState(enemy, animator));
+            enemy.ChangeState(new EnemyPatrolState(enemy));
         }
     }
 

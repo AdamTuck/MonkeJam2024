@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class EnemySearchState : EnemyState
 {
-    public EnemySearchState(EnemyController _enemy, Animator _animator) : base(_enemy, _animator)
+    public EnemySearchState(EnemyController _enemy) : base(_enemy)
     {
 
     }
@@ -22,54 +22,9 @@ public class EnemySearchState : EnemyState
 
     public override void OnStateUpdate()
     {
-
-
-        /*enemy.searchTimer += Time.deltaTime;
-        if (enemy.searchTimer >= enemy.searchTimeout)
-        {
-            enemy.roamTimer = 0;
-            enemy.searchTimer = 0;
-            enemy.ChangeState(new EnemyPatrolState(enemy));
-            return;
-        }*/
-
-        enemy.idleTimer += Time.deltaTime;
-        if (enemy.idleTimer < enemy.idleTime)
-        {
-            //Idle
-            animator.SetBool("Idle", true);
-            enemy.idleTimer += Time.deltaTime;
-            enemy.agent.SetDestination(enemy.transform.position);
-        }
-        else if (enemy.roamTimer < enemy.roamTime)
-        {
-            enemy.roamTimer += Time.deltaTime;
-            animator.SetBool("Idle", false);
-            animator.SetBool("Running", true);
-            if (!enemy.agent.pathPending)
-            {
-                if (enemy.agent.remainingDistance <= enemy.agent.stoppingDistance)
-                {
-                    if (!enemy.agent.hasPath || enemy.agent.velocity.sqrMagnitude == 0f)
-                    {
-                        enemy.agent.SetDestination(RandomNavmeshLocation(enemy.roamRadius));
-                    }
-                }
-            }
-            //Else it just walks
-        }
-        else
-        {
-            //Reset timers and start idle again
-            animator.SetBool("Idle", true);
-            animator.SetBool("Running", false);
-            enemy.roamTimer = 0;
-            enemy.idleTimer = 0;
-        }
-
-        /*
         enemy.roamTimer += Time.deltaTime;
-        if (enemy.roamTimer >= enemy.roamTime)
+
+        if (enemy.roamTimer >= enemy.roamFrequency)
         {
             enemy.agent.SetDestination(RandomNavmeshLocation(enemy.roamRadius));
             enemy.roamTimer = 0;
@@ -85,7 +40,7 @@ public class EnemySearchState : EnemyState
                     enemy.roamTimer = 0;
                 }
             }
-        }*/
+        }
 
         if (Physics.SphereCast(enemy.enemyEye.position, enemy.checkRadius, enemy.transform.forward, out RaycastHit hit, enemy.playerCheckDistance))
         {
@@ -95,7 +50,7 @@ public class EnemySearchState : EnemyState
                 enemy.player = hit.transform;
                 enemy.agent.destination = enemy.player.position;
 
-                enemy.ChangeState(new EnemyFollowState(enemy, animator));
+                enemy.ChangeState(new EnemyFollowState(enemy));
             }
         }
     }

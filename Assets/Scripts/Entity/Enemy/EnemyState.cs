@@ -5,12 +5,10 @@ using UnityEngine;
 public abstract class EnemyState
 {
     protected EnemyController enemy;
-    protected Animator animator;
 
-    public EnemyState (EnemyController _enemy, Animator _animator)
+    public EnemyState (EnemyController _enemy)
     {
         this.enemy = _enemy;
-        this.animator = _animator;
     }
 
     public abstract void OnStateEnter();

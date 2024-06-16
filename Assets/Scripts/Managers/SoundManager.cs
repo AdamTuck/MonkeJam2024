@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-<<<<<<< HEAD
 using UnityEngine.Audio;
 
 public class SoundManager : MonoBehaviour
@@ -41,11 +40,4 @@ public class SoundManager : MonoBehaviour
                 break;
         }
     }
-=======
-
-public class SoundManager : MonoBehaviour
-{
-    AudioSource m_AudioSource;
-
->>>>>>> BurryBurstBranch
 }

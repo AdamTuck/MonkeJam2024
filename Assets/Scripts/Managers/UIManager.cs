@@ -25,16 +25,6 @@ public class UIManager : MonoBehaviour
     [Header("Map Refs")]
     [SerializeField] private GameObject mapObject;
 
-    [Header("Weapon Wheel")]
-    [SerializeField] Image mainWeapon;
-    [SerializeField] TextMeshProUGUI mainAmount;
-    [SerializeField] Image nextWeapon;
-    [SerializeField] Image prevWeapon;
-
-    [Header("Main Menu")]
-    [SerializeField] GameObject mainMenuScreen;
-    [SerializeField] GameObject optionsScreen;
-
     [Header("Other Refs")]
     [SerializeField] GameObject splashScreenObj;
     [SerializeField] CanvasGroup splashScreenBGObj;
@@ -252,33 +242,4 @@ public class UIManager : MonoBehaviour
     {
         tooltipText.gameObject.SetActive(false);
     }
-
-
-    public void updateWeapons(IUseableItem main, IUseableItem next, IUseableItem prev)
-    {
-        mainWeapon.sprite = main.sprite;
-        nextWeapon.sprite = next.sprite;
-        prevWeapon.sprite = prev.sprite;
-        updateWeaponAmount(main);
-    }
-    public void updateWeaponAmount(IUseableItem main)
-    {
-        mainAmount.text = main.count + " x";
-    }
-
-    public void StartGame()
-    {
-        mainMenuScreen.SetActive(false);
-        //GameManager.instance.ChangeState(GameManager.GameState.DayStart,);
-    }
-
-    public void OpenOptions()
-    {
-        optionsScreen.SetActive(true);
-    }
-    public void CloseOptions()
-    {
-        optionsScreen.SetActive(false);
-    }
-
 }

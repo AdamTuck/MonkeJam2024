@@ -8,9 +8,5 @@ public class Client:ScriptableObject
 {
     public string clientName;
     public Texture clientImage;
-<<<<<<< HEAD
     public int clientLocationIndex;
-=======
-    public GameObject clientLocation;
->>>>>>> BurryBurstBranch
 }

@@ -7,12 +7,7 @@ using System;
 public class MissionType : ScriptableObject
 {
     public string missionName;
-<<<<<<< HEAD
     public string restaurantName;
     public float missionLength;
     public int destinationIndex;
-=======
-    public string missionDescription;
-    public float missionLength;
->>>>>>> BurryBurstBranch
 }

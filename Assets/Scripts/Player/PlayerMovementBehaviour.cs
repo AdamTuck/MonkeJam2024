@@ -1,27 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
 
 [RequireComponent(typeof (CharacterController))]
 public class PlayerMovementBehaviour : MonoBehaviour
 {
     PlayerInput playerInput;
-    public static PlayerMovementBehaviour instance;
 
     [Header("Player Movement")]
     [SerializeField] private float topSpeed;
     [SerializeField] private float topSpeedSprinting;
-    [SerializeField] public float accelerationRate;
-    [SerializeField] public float decelerationRate;
+    [SerializeField] private float accelerationRate;
     [SerializeField] private float momentumDegradeRate;
     [SerializeField] private float gravity = -9.81f;
-    [SerializeField] private AudioSource cycleSound;
-    [SerializeField] private AudioSource sprintSound;
 
     [Header("Player Stamina")]
     [SerializeField] private float sprintMultiplier;
-    [SerializeField] public float topEndurance;
+    [SerializeField] private float topEndurance;
     [SerializeField] private float enduranceDegradeRateResting;
     [SerializeField] private float enduranceDegradeMultiplier;
 
@@ -35,21 +30,9 @@ public class PlayerMovementBehaviour : MonoBehaviour
     private Vector3 playerVelocity;
     private float currentEndurance;
     public bool isGrounded { get; private set; }
-    public float currentSpeed;
-    public bool rocketEngine;
+    private float currentSpeed;
     private float moveMultiplier = 1;
 
-
-    private void Awake()
-    {
-        if (instance && instance != this)
-        {
-            Destroy(instance);
-            return;
-        }
-
-        instance = this;
-    }
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -62,26 +45,6 @@ public class PlayerMovementBehaviour : MonoBehaviour
         GroundedCheck();
         MovePlayer();
         EnduranceDegrade();
-        if (currentSpeed > 0)
-        {
-            //play sound
-            cycleSound.enabled = true;
-            if (currentSpeed > topSpeed)
-            {
-                cycleSound.enabled = false;
-                sprintSound.enabled = true;
-            }
-            else
-            {
-                cycleSound.enabled = true;
-                sprintSound.enabled = false;
-            }
-        }
-        else
-        {
-            cycleSound.enabled = false;
-            sprintSound.enabled = false;
-        }
     }
     
     void EnduranceDegrade()
@@ -115,7 +78,7 @@ public class PlayerMovementBehaviour : MonoBehaviour
         }
         else if (playerInput.vertical < 0 && currentEndurance > 0)
         {
-            currentSpeed = Mathf.Clamp(currentSpeed - decelerationRate*2, 0, topSpeedSprinting);
+            currentSpeed = Mathf.Clamp(currentSpeed - accelerationRate*2, 0, topSpeedSprinting);
             enduranceDegradeMultiplier = 1;
         }
         else
@@ -127,12 +90,6 @@ public class PlayerMovementBehaviour : MonoBehaviour
         //moveMultiplier = playerInput.sprint ? sprintMultiplier : 1;
 
         //characterController.Move((transform.forward * playerInput.vertical + transform.right * playerInput.horizontal) * moveSpeed * Time.deltaTime * moveMultiplier);
-        if (rocketEngine)
-        { 
-            //When rocketboosting you constantly move at topSpeed but spend no stamina
-            currentSpeed = topSpeedSprinting + 8;
-            enduranceDegradeMultiplier = 0;
-        }
         characterController.Move(transform.forward * currentSpeed * Time.deltaTime);
 
         if (isGrounded && playerVelocity.y < 0)

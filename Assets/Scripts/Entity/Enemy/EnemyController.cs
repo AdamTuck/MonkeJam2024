@@ -6,7 +6,6 @@ using UnityEngine.AI;
 public class EnemyController : MonoBehaviour
 {
     private EnemyState currentState;
-    public Animator animator;
 
     [Header("Navigation")]
     public Transform destinationPoint;
@@ -20,18 +19,17 @@ public class EnemyController : MonoBehaviour
 
     // Roaming
     [Header("Searching")]
-    public float idleTime;
-    public float roamTime;
+    public float roamFrequency;
     public float roamRadius;
     public float searchTimeout;
-     public float roamTimer, searchTimer, idleTimer;
+    [HideInInspector] public float roamTimer, searchTimer;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
 
         // Default state (Patrolling)
-        currentState = new EnemySearchState(this, animator);
+        currentState = new EnemySearchState(this);
         currentState.OnStateEnter();
     }
 

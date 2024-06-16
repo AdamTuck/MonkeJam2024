@@ -7,7 +7,7 @@ using System;
 public class Health : MonoBehaviour
 {
     [Header("Health Attributes")]
-    [SerializeField] public float maxHealth;
+    [SerializeField] private float maxHealth;
     [SerializeField] private float minHealth;
     [SerializeField] private bool isPlayerHealth;
 
