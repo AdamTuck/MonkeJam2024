@@ -14,6 +14,8 @@ public class EnemyFollowState : EnemyState
     public override void OnStateEnter()
     {
         Debug.Log("Begin Following");
+        animator.SetBool("Running", true);
+        animator.SetBool("Idle", false);
     }
 
     public override void OnStateExit()
