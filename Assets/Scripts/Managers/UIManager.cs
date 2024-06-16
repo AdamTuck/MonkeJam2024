@@ -20,6 +20,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text[] clientNameTxt;
     [SerializeField] private TMP_Text[] clientOrderTxt;
     [SerializeField] private TMP_Text[] clientDeadlineTxt;
+    [SerializeField] private TMP_Text[] clientStatusTxt;
 
     [Header("Map Refs")]
     [SerializeField] private GameObject mapObject;
@@ -28,6 +29,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] GameObject splashScreenObj;
     [SerializeField] CanvasGroup splashScreenBGObj;
     [SerializeField] CanvasGroup daySpashScreenTxt;
+    [SerializeField] TextMeshProUGUI tooltipText;
 
     [SerializeField] TextMeshProUGUI currentDayTxt;
 
@@ -160,11 +162,12 @@ public class UIManager : MonoBehaviour
         txtSpeed.text = $"Speed: {Mathf.Round(speedNum*2.5f)} kph";
     }
 
-    public void UpdateClientUI (int index, bool isActive, string _clientName, Texture _clientImage, string _order, float _deadline)
+    public void UpdateClientUI (int index, bool isActive, string _clientName, Texture _clientImage, string _order, float _deadline, string _status)
     {
         clientNameTxt[index].text = _clientName;
         clientOrderTxt[index].text = _order;
         clientDeadlineTxt[index].text = "" + TimeSpan.FromSeconds(_deadline).ToString("mm\\:ss");
+        clientStatusTxt[index].text = _status;
 
         missionObjs[index].GetComponent<RawImage>().texture = _clientImage;
 
@@ -227,5 +230,16 @@ public class UIManager : MonoBehaviour
     public void UpdateCurrentDay(string dayNum)
     {
         currentDayTxt.text = "DAY " + dayNum;
+    }
+
+    public void ShowTooltip(string _tooltipText)
+    {
+        tooltipText.gameObject.SetActive(true);
+        tooltipText.text = _tooltipText;
+    }
+
+    public void HideTooltip()
+    {
+        tooltipText.gameObject.SetActive(false);
     }
 }

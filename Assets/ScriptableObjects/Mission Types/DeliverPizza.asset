@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2fecfaccb382484f83171874968fb6f, type: 3}
   m_Name: DeliverPizza
   m_EditorClassIdentifier: 
-  missionName: Deliver Pizza
-  missionDescription: A pizza is needed. It's urgent. Incredibly urgent.
+  missionName: Pizza
+  restaurantName: Pizza Hot
   missionLength: 350
+  destinationIndex: 11

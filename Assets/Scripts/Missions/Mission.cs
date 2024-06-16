@@ -4,18 +4,20 @@ using UnityEngine;
 
 public class Mission
 {
+    public bool foodPickedUp;
+
     public Client client;
     public string missionName;
-    public string missionDescription;
+    public string restaurantName;
     public float missionLength;
+    public int scrapReward;
 
-    public Mission (Client _client, string _missionType, string _missionDescription, float _missionLength)
+    public Mission (Client _client, string _missionType, string _restaurantName, float _missionLength, int _scrapReward)
     {
         client = _client;
         missionName = _missionType;
-        missionDescription = _missionDescription;
+        restaurantName = _restaurantName;
         missionLength = _missionLength;
+        scrapReward = _scrapReward;
     }
-
-    // Client, StartPoint, Destination
 }

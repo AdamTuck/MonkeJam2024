@@ -4,59 +4,119 @@ using UnityEngine;
 
 public class MissionManager : MonoBehaviour
 {
+    [Header("Properties")]
+    [SerializeField] private float newMissionInterval;
+    [SerializeField] private int maxConcurrentMissions;
+
     [Header("Data Refs")]
+    [SerializeField] private GameObject[] destinations;
     [SerializeField] private MissionType[] missionTypes;
     [SerializeField] private Client[] clients;
 
-    private Mission[] currentMissions;
+    private List<Mission> currentMissions = new List<Mission>();
+    private float missionTimer;
+
+    public static MissionManager instance;
+
+    private void Awake()
+    {
+        if (instance && instance != this)
+        {
+            Destroy(instance);
+            return;
+        }
+
+        instance = this;
+    }
 
     void Start()
     {
-        currentMissions = new Mission[3];
         AddNewMissionIfAvailable();
+        missionTimer = 0;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        UpdateMissionCountersInUI();
+        if (GameManager.instance.CurrentState() == "DayRunning")
+        {
+            UpdateMissionCountersInUI();
+            NewMissionTimer();
+        }
     }
 
     private void UpdateMissionCountersInUI()
     {
-        for (int i = 0; i < currentMissions.Length; i++)
+        for (int i = 0; i < currentMissions.Count; i++)
         {
-            if (currentMissions[i] != null)
+            currentMissions[i].missionLength -= Time.deltaTime;
+
+            if (currentMissions[i].missionLength < 0)
+                FailMission(i);
+        }
+
+        UpdateMissionUI();
+    }
+
+    private void UpdateMissionUI ()
+    {
+        for (int i = 0; i < maxConcurrentMissions; i++)
+        {
+            if (currentMissions.Count > i)
             {
-                currentMissions[i].missionLength -= Time.deltaTime;
+                string statusTxt;
 
-                if (currentMissions[i].missionLength < 0)
-                {
-                    // MISSION FAILED
+                if (!currentMissions[i].foodPickedUp)
+                    statusTxt = "Pick Up from Restaurant";
+                else
+                    statusTxt = "Deliver to Customer";
 
-                    UIManager.instance.UpdateClientUI(i, false, "", null, "", 0f);
-                }
-
-                UIManager.instance.UpdateClientUI(i, true, currentMissions[i].client.name, currentMissions[i].client.clientImage, currentMissions[i].missionName,
-                    currentMissions[i].missionLength);
+                UIManager.instance.UpdateClientUI(i, true, currentMissions[i].client.name,
+                    currentMissions[i].client.clientImage, currentMissions[i].missionName + ", " + currentMissions[i].restaurantName,
+                    currentMissions[i].missionLength, statusTxt);
             }
+            else
+                UIManager.instance.UpdateClientUI(i, false, "", null, "", 0f, "");
+        }
+    }
+
+    private void NewMissionTimer ()
+    {
+        missionTimer += Time.deltaTime;
+
+        if (missionTimer > newMissionInterval)
+        {
+            missionTimer = 0;
+            AddNewMissionIfAvailable();
         }
     }
 
     public void AddNewMissionIfAvailable()
     {
-        for (int i = 0; i < currentMissions.Length; i++)
+        if (currentMissions.Count < maxConcurrentMissions)
         {
-            if (currentMissions[i] == null)
-            {
-                currentMissions[i] = GenerateNewMission();
-
-                UIManager.instance.UpdateClientUI(i, true, currentMissions[i].client.clientName, currentMissions[i].client.clientImage, currentMissions[i].missionName,
-                    currentMissions[i].missionLength);
-
-                return;
-            }
+            currentMissions.Add(GenerateNewMission());
+            UpdateMissionUI();
         }
+    }
+
+    public void CompleteMission (int missionIndex)
+    {
+        PlayerInventory.instance.scrap += currentMissions[missionIndex].scrapReward;
+
+        currentMissions.RemoveAt(missionIndex);
+        UpdateMissionUI();
+    }
+
+    public void FailMission (int missionIndex)
+    {
+        currentMissions.RemoveAt(missionIndex);
+        UpdateMissionUI();
+    }
+
+    public void ClearCurrentMissions()
+    {
+        currentMissions.Clear();
+        UpdateMissionUI();
     }
 
     public Mission GenerateNewMission ()
@@ -66,9 +126,43 @@ public class MissionManager : MonoBehaviour
 
         Mission newMission = new Mission(clients[randomClientIndex], 
             missionTypes[randomMissionIndex].missionName, 
-            missionTypes[randomMissionIndex].missionDescription, 
-            missionTypes[randomMissionIndex].missionLength);
+            missionTypes[randomMissionIndex].restaurantName, 
+            missionTypes[randomMissionIndex].missionLength,
+            10);
+
+        destinations[missionTypes[randomMissionIndex].destinationIndex].SetActive(true);
+        destinations[missionTypes[randomMissionIndex].destinationIndex].GetComponent<ObjectiveDoor>().ShowWaypoint();
 
         return newMission;
+    }
+
+    public void PickUpFood (string _restaurantName)
+    {
+        for (int i = 0; i < currentMissions.Count; i++)
+        {
+            Debug.Log($"{currentMissions[i].restaurantName}, {_restaurantName}");
+            if (currentMissions[i].restaurantName == _restaurantName)
+            {
+                currentMissions[i].foodPickedUp = true;
+                destinations[currentMissions[i].client.clientLocationIndex].SetActive(true);
+                destinations[currentMissions[i].client.clientLocationIndex].GetComponent<ObjectiveDoor>().ShowWaypoint();
+            }
+        }
+
+        UpdateMissionUI();
+    }
+
+    public void DeliverFood (string _clientName)
+    {
+        for (int i = 0; i < currentMissions.Count; i++)
+        {
+            Debug.Log($"{currentMissions[i].client.clientName}, {_clientName}");
+            if (currentMissions[i].client.clientName == _clientName)
+            {
+                CompleteMission(i);
+            }
+        }
+
+        UpdateMissionUI();
     }
 }

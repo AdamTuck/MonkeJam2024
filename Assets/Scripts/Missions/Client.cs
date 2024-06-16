@@ -8,5 +8,5 @@ public class Client:ScriptableObject
 {
     public string clientName;
     public Texture clientImage;
-    public GameObject clientLocation;
+    public int clientLocationIndex;
 }

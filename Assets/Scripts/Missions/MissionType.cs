@@ -7,6 +7,7 @@ using System;
 public class MissionType : ScriptableObject
 {
     public string missionName;
-    public string missionDescription;
+    public string restaurantName;
     public float missionLength;
+    public int destinationIndex;
 }

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Chris Broad
   m_EditorClassIdentifier: 
   clientName: Chris Broad
-  clientImage: {fileID: 2800000, guid: 507f82bfcfaac9a4db1ca1b195ea636b, type: 3}
-  clientLocation: {fileID: 0}
+  clientImage: {fileID: 2800000, guid: 42a039aec8403e648a44bc44e5d31316, type: 3}
+  clientLocationIndex: 1

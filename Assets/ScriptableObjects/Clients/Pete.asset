@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Pete
   m_EditorClassIdentifier: 
   clientName: Pete
-  clientImage: {fileID: 2800000, guid: e97827144ea9ff4489bbb2e665d99aa1, type: 3}
-  clientLocation: {fileID: 0}
+  clientImage: {fileID: 2800000, guid: 9c885c27d24c32449a001dbc82214c99, type: 3}
+  clientLocationIndex: 7

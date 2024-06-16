@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
-    public enum GameState { DayStart, DayRunning, DayEnd, NightUpgrade, GameOver, GameEnd }
+    public enum GameState { DayStart, DayRunning, StormWall, DayEnd, NightUpgrade, GameOver, GameEnd }
 
     private void Awake()
     {
@@ -71,6 +71,9 @@ public class GameManager : MonoBehaviour
                 break;
             case GameState.DayRunning:
                 DayRunning();
+                break;
+            case GameState.StormWall:
+                StormWallRace();
                 break;
             case GameState.DayEnd:
                 DayEnd();
@@ -117,10 +120,17 @@ public class GameManager : MonoBehaviour
         Debug.Log("Level In: " + currentLevel.gameObject.name);
     }
 
+    private void StormWallRace()
+    {
+        StormWall.instance.ShrinkWall();
+    }
+
     private void DayEnd ()
     {
         Debug.Log("Level End: " + currentLevel.gameObject.name);
 
+        StormWall.instance.ResetWall();
+        MissionManager.instance.ClearCurrentMissions();
         WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
 
         ChangeState(GameState.NightUpgrade, currentLevel);
@@ -135,6 +145,11 @@ public class GameManager : MonoBehaviour
     {
         ChangeState(GameState.DayStart, levels[++currentLevelIndex]);
         RespawnAtCheckpoint();
+    }
+
+    public void EndCurrentDay()
+    {
+        ChangeState(GameState.DayEnd, currentLevel);
     }
 
     private void GameOver()
@@ -180,6 +195,11 @@ public class GameManager : MonoBehaviour
     private void DayNightRoutines()
     {
         if (currentState.ToString() == "DayRunning" && WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay >= dayEndTime)
-            ChangeState(GameState.DayEnd, currentLevel);
+            ChangeState(GameState.StormWall, currentLevel);
+    }
+
+    public string CurrentState()
+    {
+        return currentState.ToString();
     }
 }
