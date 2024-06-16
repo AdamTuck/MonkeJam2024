@@ -11,6 +11,7 @@ public class ScrapBox : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             PlayerInventory.instance.scrap += 10;
+            UIManager.instance.UpdateScrap();
             gameObject.SetActive(false);
         }
     }

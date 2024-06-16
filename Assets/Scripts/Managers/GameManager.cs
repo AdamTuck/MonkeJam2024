@@ -109,6 +109,7 @@ public class GameManager : MonoBehaviour
         UIManager.instance.StartDaySplashScreen();
 
         AudioManager.instance.SetAmbience("dayMusic");
+        UIManager.instance.UpdateScrap();
     }
 
     private void DayRunning()
@@ -174,8 +175,15 @@ public class GameManager : MonoBehaviour
         UIManager.OnRespawnUI();
         playerMovement.ResetStats();
 
-        player.transform.position = new Vector3(currentLevel.CheckpointPos().position.x, currentLevel.CheckpointPos().position.y, currentLevel.CheckpointPos().position.z);
-        player.transform.rotation = Quaternion.Euler(new Vector3(currentLevel.CheckpointPos().eulerAngles.x, currentLevel.CheckpointPos().eulerAngles.y, currentLevel.CheckpointPos().eulerAngles.z));
+        player.transform.position = new Vector3(currentLevel.CheckpointPos().position.x,
+            currentLevel.CheckpointPos().position.y,
+            currentLevel.CheckpointPos().position.z);
+
+        Physics.SyncTransforms();
+
+        player.transform.rotation = Quaternion.Euler(new Vector3(currentLevel.CheckpointPos().eulerAngles.x, 
+            currentLevel.CheckpointPos().eulerAngles.y, 
+            currentLevel.CheckpointPos().eulerAngles.z));
     }
 
     private void GameEnd ()

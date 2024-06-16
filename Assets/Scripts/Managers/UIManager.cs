@@ -12,8 +12,10 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject pauseScreen;
     [SerializeField] private TMP_Text tutorialText;
     [SerializeField] private float tutorialTimeout;
+    [SerializeField] private Slider healthBar;
     [SerializeField] private Slider staminaBar;
     [SerializeField] private TMP_Text txtSpeed;
+    [SerializeField] private TMP_Text txtScrap;
 
     [Header("MissionUIRefs")]
     [SerializeField] private GameObject[] missionObjs;
@@ -120,7 +122,8 @@ public class UIManager : MonoBehaviour
 
     void OnHealthUpdate (float health)
     {
-        txtHealth.text = "Health: " + Mathf.Ceil(health).ToString();
+        //txtHealth.text = "Health: " + Mathf.Ceil(health).ToString();
+        healthBar.value = health/100;
     }
 
     void OnDeath ()
@@ -281,4 +284,8 @@ public class UIManager : MonoBehaviour
         optionsScreen.SetActive(false);
     }
 
+    public void UpdateScrap ()
+    {
+        txtScrap.text = "Scrap: " + PlayerInventory.instance.scrap;
+    }
 }

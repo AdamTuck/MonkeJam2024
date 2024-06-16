@@ -12,6 +12,7 @@ public class MissionManager : MonoBehaviour
     [SerializeField] private GameObject[] destinations;
     [SerializeField] private MissionType[] missionTypes;
     [SerializeField] private Client[] clients;
+    [SerializeField] private GameObject foodBasketObj;
 
     private List<Mission> currentMissions = new List<Mission>();
     private float missionTimer;
@@ -59,10 +60,14 @@ public class MissionManager : MonoBehaviour
 
     private void UpdateMissionUI ()
     {
+        bool holdingFood = false;
+
         for (int i = 0; i < maxConcurrentMissions; i++)
         {
             if (currentMissions.Count > i)
             {
+                holdingFood = true;
+
                 string statusTxt;
 
                 if (!currentMissions[i].foodPickedUp)
@@ -77,6 +82,8 @@ public class MissionManager : MonoBehaviour
             else
                 UIManager.instance.UpdateClientUI(i, false, "", null, "", 0f, "");
         }
+
+        foodBasketObj.SetActive(holdingFood);
     }
 
     private void NewMissionTimer ()
@@ -102,6 +109,7 @@ public class MissionManager : MonoBehaviour
     public void CompleteMission (int missionIndex)
     {
         PlayerInventory.instance.scrap += currentMissions[missionIndex].scrapReward;
+        UIManager.instance.UpdateScrap();
 
         currentMissions.RemoveAt(missionIndex);
         UpdateMissionUI();
