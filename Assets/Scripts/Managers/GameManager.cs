@@ -30,7 +30,11 @@ public class GameManager : MonoBehaviour
 
     public static GameManager instance;
 
+<<<<<<< HEAD
     public enum GameState { DayStart, DayRunning, StormWall, DayEnd, NightUpgrade, GameOver, GameEnd }
+=======
+    public enum GameState { DayStart, DayRunning, DayEnd, NightUpgrade, GameOver, GameEnd }
+>>>>>>> BurryBurstBranch
 
     private void Awake()
     {
@@ -72,12 +76,18 @@ public class GameManager : MonoBehaviour
             case GameState.DayRunning:
                 DayRunning();
                 break;
+<<<<<<< HEAD
             case GameState.StormWall:
                 StormWallRace();
                 break;
             case GameState.DayEnd:
                 DayEnd();
                 break;
+=======
+            case GameState.DayEnd:
+                DayEnd();
+                break;
+>>>>>>> BurryBurstBranch
             case GameState.NightUpgrade:
                 NightUpgrade();
                 break;
@@ -95,10 +105,13 @@ public class GameManager : MonoBehaviour
     private void DayStart ()
     {
         Debug.Log("Day start");
+<<<<<<< HEAD
 
         //DEBUG
         PlayerInventory.instance.shotgunShell.count = 10;
 
+=======
+>>>>>>> BurryBurstBranch
         currentLevel.StartLevel();
         cutsceneEnded?.Invoke();
 
@@ -107,11 +120,15 @@ public class GameManager : MonoBehaviour
         WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay = dayStartTime;
         WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
 
+<<<<<<< HEAD
         currentDay++;
         UIManager.instance.UpdateCurrentDay(currentDay.ToString());
         UIManager.instance.StartDaySplashScreen();
 
         SoundManager.instance.SetAmbience("dayMusic");
+=======
+        UIManager.instance.StartDaySplashScreen();
+>>>>>>> BurryBurstBranch
     }
 
     private void DayRunning()
@@ -122,26 +139,36 @@ public class GameManager : MonoBehaviour
         Debug.Log("Level In: " + currentLevel.gameObject.name);
     }
 
+<<<<<<< HEAD
     private void StormWallRace()
     {
         SoundManager.instance.SetAmbience("storm");
         StormWall.instance.ShrinkWall();
     }
 
+=======
+>>>>>>> BurryBurstBranch
     private void DayEnd ()
     {
         Debug.Log("Level End: " + currentLevel.gameObject.name);
 
+<<<<<<< HEAD
         StormWall.instance.ResetWall();
         MissionManager.instance.ClearCurrentMissions();
         WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
 
         SoundManager.instance.SetAmbience("shop");
         ChangeState(GameState.NightUpgrade, currentLevel);
+=======
+        WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
+
+        ChangeState(GameState.NightUpgrade, levels[++currentLevelIndex]);
+>>>>>>> BurryBurstBranch
     }
 
     private void NightUpgrade()
     {
+<<<<<<< HEAD
         ShopManager.instance.openShop();
     }
 
@@ -154,6 +181,9 @@ public class GameManager : MonoBehaviour
     public void EndCurrentDay()
     {
         ChangeState(GameState.DayEnd, currentLevel);
+=======
+
+>>>>>>> BurryBurstBranch
     }
 
     private void GameOver()
@@ -195,6 +225,7 @@ public class GameManager : MonoBehaviour
     {
         GameManager.instance.ChangeState(GameState.DayRunning, currentLevel);
     }
+<<<<<<< HEAD
 
     private void DayNightRoutines()
     {
@@ -206,4 +237,6 @@ public class GameManager : MonoBehaviour
     {
         return currentState.ToString();
     }
+=======
+>>>>>>> BurryBurstBranch
 }

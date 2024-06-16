@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MissionManager : MonoBehaviour
 {
+<<<<<<< HEAD
     [Header("Properties")]
     [SerializeField] private float newMissionInterval;
     [SerializeField] private int maxConcurrentMissions;
@@ -42,10 +43,29 @@ public class MissionManager : MonoBehaviour
             UpdateMissionCountersInUI();
             NewMissionTimer();
         }
+=======
+    [Header("Data Refs")]
+    [SerializeField] private MissionType[] missionTypes;
+    [SerializeField] private Client[] clients;
+
+    private Mission[] currentMissions;
+
+    void Start()
+    {
+        currentMissions = new Mission[3];
+        AddNewMissionIfAvailable();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        UpdateMissionCountersInUI();
+>>>>>>> BurryBurstBranch
     }
 
     private void UpdateMissionCountersInUI()
     {
+<<<<<<< HEAD
         for (int i = 0; i < currentMissions.Count; i++)
         {
             currentMissions[i].missionLength -= Time.deltaTime;
@@ -87,11 +107,30 @@ public class MissionManager : MonoBehaviour
         {
             missionTimer = 0;
             AddNewMissionIfAvailable();
+=======
+        for (int i = 0; i < currentMissions.Length; i++)
+        {
+            if (currentMissions[i] != null)
+            {
+                currentMissions[i].missionLength -= Time.deltaTime;
+
+                if (currentMissions[i].missionLength < 0)
+                {
+                    // MISSION FAILED
+
+                    UIManager.instance.UpdateClientUI(i, false, "", null, "", 0f);
+                }
+
+                UIManager.instance.UpdateClientUI(i, true, currentMissions[i].client.name, currentMissions[i].client.clientImage, currentMissions[i].missionName,
+                    currentMissions[i].missionLength);
+            }
+>>>>>>> BurryBurstBranch
         }
     }
 
     public void AddNewMissionIfAvailable()
     {
+<<<<<<< HEAD
         if (currentMissions.Count < maxConcurrentMissions)
         {
             currentMissions.Add(GenerateNewMission());
@@ -119,6 +158,22 @@ public class MissionManager : MonoBehaviour
         UpdateMissionUI();
     }
 
+=======
+        for (int i = 0; i < currentMissions.Length; i++)
+        {
+            if (currentMissions[i] == null)
+            {
+                currentMissions[i] = GenerateNewMission();
+
+                UIManager.instance.UpdateClientUI(i, true, currentMissions[i].client.clientName, currentMissions[i].client.clientImage, currentMissions[i].missionName,
+                    currentMissions[i].missionLength);
+
+                return;
+            }
+        }
+    }
+
+>>>>>>> BurryBurstBranch
     public Mission GenerateNewMission ()
     {
         int randomMissionIndex = Random.Range(0, missionTypes.Length);
@@ -126,6 +181,7 @@ public class MissionManager : MonoBehaviour
 
         Mission newMission = new Mission(clients[randomClientIndex], 
             missionTypes[randomMissionIndex].missionName, 
+<<<<<<< HEAD
             missionTypes[randomMissionIndex].restaurantName, 
             missionTypes[randomMissionIndex].missionLength,
             10);
@@ -165,4 +221,11 @@ public class MissionManager : MonoBehaviour
 
         UpdateMissionUI();
     }
+=======
+            missionTypes[randomMissionIndex].missionDescription, 
+            missionTypes[randomMissionIndex].missionLength);
+
+        return newMission;
+    }
+>>>>>>> BurryBurstBranch
 }

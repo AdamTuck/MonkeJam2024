@@ -12,11 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d4dbdbf04c6ebf4ab9bbaaea3ca6638, type: 3}
   m_Name: WeatherMakerDayNightCycleProfile_Default
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   Speed: 100
   NightSpeed: 100
   UpdateInterval: 0.03
   TimeOfDay: 48051
   TimeOfDayLabel: 01:20 PM
+=======
+  Speed: 0
+  NightSpeed: 0
+  UpdateInterval: 0.03
+  TimeOfDay: 32400
+  TimeOfDayLabel: 09:00 AM
+>>>>>>> BurryBurstBranch
   Year: 2017
   Month: 3
   Day: 13
