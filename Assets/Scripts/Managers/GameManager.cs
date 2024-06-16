@@ -96,9 +96,6 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Day start");
 
-        //DEBUG
-        PlayerInventory.instance.shotgunShell.count = 10;
-
         currentLevel.StartLevel();
         cutsceneEnded?.Invoke();
 
