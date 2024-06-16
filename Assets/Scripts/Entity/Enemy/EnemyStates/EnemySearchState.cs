@@ -23,15 +23,6 @@ public class EnemySearchState : EnemyState
     public override void OnStateUpdate()
     {
         enemy.roamTimer += Time.deltaTime;
-        enemy.searchTimer += Time.deltaTime;
-
-        if (enemy.searchTimer >= enemy.searchTimeout)
-        {
-            enemy.roamTimer = 0;
-            enemy.searchTimer = 0;
-            enemy.ChangeState(new EnemyPatrolState(enemy));
-            return;
-        }
 
         if (enemy.roamTimer >= enemy.roamFrequency)
         {
