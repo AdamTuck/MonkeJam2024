@@ -265,4 +265,8 @@ public class UIManager : MonoBehaviour
         mainAmount.text = main.count + " x";
     }
 
+    public void UpdateScrap()
+    {
+        txtScrap.text = "Scrap: " + PlayerInventory.instance.scrap;
+    }
 }
