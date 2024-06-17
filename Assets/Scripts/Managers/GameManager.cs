@@ -45,6 +45,10 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        PlayerInventory.instance.bomb.count = 0;
+        PlayerInventory.instance.shotgunShell.count = 0;
+        PlayerInventory.instance.jumpPad.count = 0;
+        PlayerInventory.instance.rocketEngine.count = 0;
         if (levels.Length > 0)
         {
             //ChangeState(GameState.Briefing, levels[currentLevelIndex]);
