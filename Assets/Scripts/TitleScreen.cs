@@ -12,7 +12,7 @@ public class TitleScreen : MonoBehaviour
     {
         //mainMenuScreen.SetActive(false);
         //GameManager.instance.ChangeState(GameManager.GameState.DayStart,);
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene("Gameplay");
     }
 
     public void OpenOptions()
