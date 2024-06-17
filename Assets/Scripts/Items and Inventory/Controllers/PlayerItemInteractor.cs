@@ -20,6 +20,10 @@ public class PlayerItemInteractor : MonoBehaviour
     public Transform itemPos;
     public GameObject shotgunModel;
 
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public List<AudioClip> sounds;
+
     private void Awake()
     {
         //Make PlayerItemInteractor singleton
@@ -73,8 +77,15 @@ public class PlayerItemInteractor : MonoBehaviour
                 //Do extra ground check
                 if (PlayerMovementBehaviour.instance.isGrounded)
                 {
+                    audioSource.clip = sounds[0];
+                    audioSource.Play();
                     selectedItem.Use();
                 }
+            }else if (selectedItem == PlayerInventory.instance.rocketEngine)
+            {
+                audioSource.clip = sounds[1];
+                audioSource.Play();
+                selectedItem.Use();
             }
             else
             {
