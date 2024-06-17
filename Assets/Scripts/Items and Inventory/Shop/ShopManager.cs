@@ -56,12 +56,6 @@ public class ShopManager : MonoBehaviour
     }
     public void Update()
     {
-        if (playerInput.openCloseShop)
-        {
-            shopWindow.enabled = true;
-            playerInput.LockInputs();
-        }
-
         //Update text only if shop window is open
         if (shopWindow.enabled)
         {

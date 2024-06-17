@@ -20,7 +20,6 @@ public class PlayerInput : MonoBehaviour
     public bool itemWheelDown { get; private set; }
     public bool itemWheelUp { get; private set; }
     public bool commandPressed { get; private set; }
-    public bool openCloseShop { get; private set; }
 
     private bool clear;
 
@@ -78,8 +77,6 @@ public class PlayerInput : MonoBehaviour
             itemWheelUp = itemWheelUp || Input.GetKeyDown(KeyCode.Alpha2);
 
             commandPressed = commandPressed || Input.GetKeyDown(KeyCode.F);
-
-            openCloseShop = openCloseShop || Input.GetKeyDown(KeyCode.P);
         }
 
         escape = escape || Input.GetKeyDown(KeyCode.Escape);
@@ -111,8 +108,6 @@ public class PlayerInput : MonoBehaviour
         itemWheelUp = false;
 
         commandPressed = false;
-
-        openCloseShop = false;
     }
 
     public void LockInputs ()

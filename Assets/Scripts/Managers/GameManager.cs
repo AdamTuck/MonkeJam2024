@@ -133,6 +133,7 @@ public class GameManager : MonoBehaviour
         StormWall.instance.ResetWall();
         MissionManager.instance.ClearCurrentMissions();
         WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
+        PlayerMovementBehaviour.instance.currentSpeed = 0;
 
         AudioManager.instance.SetAmbience("shop");
         ChangeState(GameState.NightUpgrade, currentLevel);
@@ -174,6 +175,7 @@ public class GameManager : MonoBehaviour
         playerHealth.RespawnPlayer();
         UIManager.OnRespawnUI();
         playerMovement.ResetStats();
+        PlayerMovementBehaviour.instance.currentSpeed = 0;
 
         player.transform.position = new Vector3(currentLevel.CheckpointPos().position.x,
             currentLevel.CheckpointPos().position.y,

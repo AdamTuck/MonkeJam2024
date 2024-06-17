@@ -117,7 +117,6 @@ public class MissionManager : MonoBehaviour
         UIManager.instance.UpdateScrap();
 
         currentMissions.RemoveAt(missionIndex);
-        UpdateMissionUI();
     }
 
     public void FailMission (int missionIndex)
