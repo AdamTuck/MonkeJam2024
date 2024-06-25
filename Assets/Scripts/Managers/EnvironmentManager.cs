@@ -39,16 +39,20 @@ public class EnvironmentManager : MonoBehaviour
     public void RollRandomWeather()
     {
         float randomWeatherRoll = UnityEngine.Random.Range(0f, 1f);
-        float randomCloudiness = UnityEngine.Random.Range(0f, 49f);
+        float randomCloudiness = UnityEngine.Random.Range(0f, 100f);
+        float visibility = 3000;
+
+        if (randomCloudiness < 25f)
+            visibility = 6000;
 
         int currentMonth = DigitalRuby.WeatherMaker.WeatherMakerDayNightCycleManagerScript.Instance.DateTime.Month;
 
         if (randomWeatherRoll > 0.8f)
-            UpdateWeathermaker("Rain", 10000, 25, 70);
+            UpdateWeathermaker("Rain", visibility, 25, 70);
         else if (randomWeatherRoll > 0.7f)
-            UpdateWeathermaker("Drizzle", 10000, 10, 50);
+            UpdateWeathermaker("Drizzle", visibility, 10, 50);
         else
-            UpdateWeathermaker("None", 10000, 0, randomCloudiness);
+            UpdateWeathermaker("None", visibility, 0, randomCloudiness);
     }
 
     public void UpdateWeathermaker(string precipitationType, float visibility, float windSpeed, float cloudinessLevel)

@@ -60,15 +60,19 @@ public class PlayerMovementBehaviour : MonoBehaviour
 
     void Update()
     {
-        GroundedCheck();
-        MovePlayer();
-        EnduranceDegrade();
+        if (!UIManager.instance.GamePaused())
+        { 
+            GroundedCheck();
+            MovePlayer();
+            EnduranceDegrade();
+        }
+
         SetBikeAudio();
     }
 
     private void SetBikeAudio()
     {
-        if (currentSpeed > 0)
+        if (currentSpeed > 0 && !UIManager.instance.GamePaused())
         {
             if (currentlyAccelerating)
                 AudioManager.instance.SetBikeAudio("bikeAccelerate");
@@ -83,8 +87,7 @@ public class PlayerMovementBehaviour : MonoBehaviour
 
     void EnduranceDegrade()
     {
-        // if currently cycling
-        currentStamina -= staminaDegradeRateResting * staminaDegradeMultiplier;
+        currentStamina = Mathf.Clamp (currentStamina - staminaDegradeRateResting * staminaDegradeMultiplier, 0, 100);
 
         UIManager.instance.SetStaminaBar(currentStamina / 100);
     }
@@ -134,9 +137,6 @@ public class PlayerMovementBehaviour : MonoBehaviour
             staminaDegradeMultiplier = -0.5f;
         }
         
-        //moveMultiplier = playerInput.sprint ? sprintMultiplier : 1;
-
-        //characterController.Move((transform.forward * playerInput.vertical + transform.right * playerInput.horizontal) * moveSpeed * Time.deltaTime * moveMultiplier);
         if (rocketEngine)
         { 
             //When rocketboosting you constantly move at topSpeed but spend no stamina

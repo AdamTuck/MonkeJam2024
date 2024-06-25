@@ -106,7 +106,7 @@ public class UIManager : MonoBehaviour
                 tutorialText.text = "F to toggle on/off your bike light.";
                 break;
             case "dayEndTutorial":
-                tutorialText.text = "Once you've delivered your quota for the day, you can sleep.\nYou can always play later to earn more scrap if you want.\n\nDon't stay out too late.";
+                tutorialText.text = "Once you've delivered your quota for the day, you can sleep.\nYou can end the day later to earn more scrap if you want.\n\nDon't stay out too late.";
                 break;
             case "statsTutorial":
                 tutorialText.text = "Stamina and health recover after resting each night.";
@@ -166,13 +166,20 @@ public class UIManager : MonoBehaviour
         if (setPauseOn)
         {
             pauseScreen.SetActive(true);
+            PlayerInput.instance.LockInputs();
             Time.timeScale = 0;
         }
         else
         {
             pauseScreen.SetActive(false);
+            PlayerInput.instance.UnlockInputs();
             Time.timeScale = 1;
         }
+    }
+
+    public bool GamePaused()
+    {
+        return pauseScreen.activeInHierarchy;
     }
 
     public void SetStaminaBar(float staminaValue)
@@ -214,15 +221,11 @@ public class UIManager : MonoBehaviour
     {
         if (pauseScreen.activeInHierarchy)
         {
-            pauseScreen.SetActive(false);
-            PlayerInput.instance.UnlockInputs();
-            Time.timeScale = 1;
+            SetPause(false);
         }
         else
         {
-            pauseScreen.SetActive(true);
-            PlayerInput.instance.LockInputs();
-            Time.timeScale = 0;
+            SetPause(true);
         }
     }
 

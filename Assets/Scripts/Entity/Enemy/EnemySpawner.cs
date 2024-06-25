@@ -87,4 +87,9 @@ public class EnemySpawner : MonoBehaviour
             if (allEnemies[i].activeInHierarchy)
                 enemyPool.DestroyPooledObject(allEnemies[i].GetComponent<PooledObject>());
     }
+    
+    public void DestroyEnemy(PooledObject enemy)
+    {
+        enemyPool.DestroyPooledObject(enemy);
+    }
 }

@@ -22,7 +22,7 @@ public class ShotgunItem : IUseableItem
         if (Physics.BoxCast(playerTransform.position - playerTransform.forward, new Vector3(5, 5, 5), playerTransform.forward, out hit, playerTransform.rotation, 10f, enemyLayer))
         {
             //Put die function of enemy here
-            Destroy(hit.transform.gameObject);
+            EnemySpawner.instance.DestroyEnemy(hit.transform.gameObject.GetComponent<PooledObject>());
         }
     }
 

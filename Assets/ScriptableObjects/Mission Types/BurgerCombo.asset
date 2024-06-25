@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: BurgerCombo
   m_EditorClassIdentifier: 
   missionName: Burger Combo
-  restaurantName: Wendys
+  restaurantName: Wendy's
   missionLength: 150
   destinationIndex: 11
