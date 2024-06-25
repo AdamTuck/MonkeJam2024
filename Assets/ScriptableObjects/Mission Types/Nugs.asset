@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   missionName: Chicken Nuggets
   restaurantName: In-N-Out Burger
-  missionLength: 250
+  missionLength: 120
   destinationIndex: 8

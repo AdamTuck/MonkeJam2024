@@ -40,9 +40,15 @@ public class Health : MonoBehaviour
         OnHealthUpdated(health);
     }
 
+    public float GetCurrentHealth()
+    {
+        return health;
+    }
+
     public void RespawnPlayer ()
     {
         isDead = false;
         health = maxHealth;
+        OnHealthUpdated(health);
     }
 }

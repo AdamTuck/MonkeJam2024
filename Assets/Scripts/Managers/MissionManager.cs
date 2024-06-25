@@ -8,9 +8,14 @@ public class MissionManager : MonoBehaviour
     [Header("Properties")]
     [SerializeField] private float newMissionInterval;
     [SerializeField] private int maxConcurrentMissions;
+    [SerializeField] private int dailyQuota;
+    [SerializeField] private int dailyQuotaIncreasePerDay;
+    [SerializeField] private int missionFailScrapPenalty;
+    [SerializeField] private float newMissionIntervalDecreasePerDay;
 
     [Header("Data Refs")]
-    [SerializeField] private GameObject[] destinations;
+    [SerializeField] private ObjectiveDoor[] destinations;
+    [SerializeField] private HomeDoor homeDestination;
     [SerializeField] private MissionType[] missionTypes;
     [SerializeField] private Client[] clients;
     [SerializeField] private GameObject foodBasketObj;
@@ -19,6 +24,8 @@ public class MissionManager : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private List<AudioClip> sounds;
 
+    private bool missionsDoneForTheDay;
+    private int missionsCompletedToday;
     private List<Mission> currentMissions = new List<Mission>();
     private float missionTimer;
 
@@ -37,7 +44,6 @@ public class MissionManager : MonoBehaviour
 
     void Start()
     {
-        AddNewMissionIfAvailable();
         missionTimer = 0;
     }
 
@@ -60,6 +66,8 @@ public class MissionManager : MonoBehaviour
                 FailMission(i);
         }
 
+        UIManager.instance.UpdateQuotaRemaining(Mathf.Clamp(dailyQuota - missionsCompletedToday, 0, dailyQuota));
+
         UpdateMissionUI();
     }
 
@@ -71,14 +79,15 @@ public class MissionManager : MonoBehaviour
         {
             if (currentMissions.Count > i)
             {
-                holdingFood = true;
-
                 string statusTxt;
 
                 if (!currentMissions[i].foodPickedUp)
                     statusTxt = "Pick Up from Restaurant";
                 else
+                {
+                    holdingFood = true;
                     statusTxt = "Deliver to Customer";
+                }
 
                 UIManager.instance.UpdateClientUI(i, true, currentMissions[i].client.name,
                     currentMissions[i].client.clientImage, currentMissions[i].missionName + ", " + currentMissions[i].restaurantName,
@@ -107,27 +116,58 @@ public class MissionManager : MonoBehaviour
         if (currentMissions.Count < maxConcurrentMissions)
         {
             currentMissions.Add(GenerateNewMission());
+            ShowAndHideDestinations();
             UpdateMissionUI();
         }
     }
 
-    public void CompleteMission (int missionIndex)
+    public void CompleteMissions ()
     {
-        PlayerInventory.instance.scrap += currentMissions[missionIndex].scrapReward;
-        UIManager.instance.UpdateScrap();
+        for (int i = 0; i < currentMissions.Count; i++)
+        {
+            if (currentMissions[i].foodDelivered)
+            {
+                PlayerInventory.instance.scrap += currentMissions[i].scrapReward;
+                UIManager.instance.UpdateScrap();
 
-        currentMissions.RemoveAt(missionIndex);
+                currentMissions.RemoveAt(i);
+
+                CompleteMissions();
+            }
+        }
     }
 
     public void FailMission (int missionIndex)
     {
         currentMissions.RemoveAt(missionIndex);
+
+        if (PlayerInventory.instance.scrap > missionFailScrapPenalty)
+            PlayerInventory.instance.scrap -= missionFailScrapPenalty;
+        else
+            PlayerInventory.instance.scrap = 0;
+
         UpdateMissionUI();
+        ShowAndHideDestinations();
     }
 
-    public void ClearCurrentMissions()
+    public void ResetMissionsForDay()
     {
         currentMissions.Clear();
+
+        for (int i = 0; i < destinations.Length; i++)
+        {
+            destinations[i].EnableObjective(false);
+        }
+            
+        missionsCompletedToday = 0;
+        missionsDoneForTheDay = false;
+        dailyQuota += dailyQuotaIncreasePerDay;
+
+        UIManager.instance.UpdateQuotaRemaining(dailyQuota);
+
+        if (newMissionInterval > newMissionIntervalDecreasePerDay)
+            newMissionInterval -= newMissionIntervalDecreasePerDay;
+
         UpdateMissionUI();
     }
 
@@ -142,8 +182,7 @@ public class MissionManager : MonoBehaviour
             missionTypes[randomMissionIndex].missionLength,
             10);
 
-        destinations[missionTypes[randomMissionIndex].destinationIndex].SetActive(true);
-        destinations[missionTypes[randomMissionIndex].destinationIndex].GetComponent<ObjectiveDoor>().ShowWaypoint();
+        //destinations[missionTypes[randomMissionIndex].destinationIndex].EnableObjective(true);
 
         return newMission;
     }
@@ -156,13 +195,13 @@ public class MissionManager : MonoBehaviour
             if (currentMissions[i].restaurantName == _restaurantName)
             {
                 currentMissions[i].foodPickedUp = true;
-                destinations[currentMissions[i].client.clientLocationIndex].SetActive(true);
-                destinations[currentMissions[i].client.clientLocationIndex].GetComponent<ObjectiveDoor>().ShowWaypoint();
+                //destinations[currentMissions[i].client.clientLocationIndex].EnableObjective(true);
             }
         }
         audioSource.clip = sounds[0];
         audioSource.Play();
 
+        ShowAndHideDestinations();
         UpdateMissionUI();
     }
 
@@ -173,12 +212,64 @@ public class MissionManager : MonoBehaviour
             Debug.Log($"{currentMissions[i].client.clientName}, {_clientName}");
             if (currentMissions[i].client.clientName == _clientName)
             {
-                CompleteMission(i);
+                currentMissions[i].foodDelivered = true;
             }
         }
         audioSource.clip = sounds[1];
         audioSource.Play();
 
+        CompleteMissions();
         UpdateMissionUI();
+        ShowAndHideDestinations();
+
+        missionsCompletedToday++;
+
+        UIManager.instance.UpdateQuotaRemaining(Mathf.Clamp(dailyQuota - missionsCompletedToday, 0, dailyQuota));
+
+        if (missionsCompletedToday >= dailyQuota)
+        {
+            homeDestination.EnableHome(true);
+            missionsDoneForTheDay = true;
+        }
+            
+    }
+
+    private void ShowAndHideDestinations()
+    {
+        bool destinationShowing;
+
+        for (int i = 0; i < destinations.Length; i++)
+        {
+            destinationShowing = false;
+
+            for (int j = 0; j < currentMissions.Count; j++)
+            {
+                if (!currentMissions[j].foodPickedUp &&
+                    destinations[i].name == currentMissions[j].restaurantName)
+                    destinationShowing = true;
+
+                if (currentMissions[j].foodPickedUp &&
+                    destinations[i].name == currentMissions[j].client.name)
+                    destinationShowing = true;
+
+                //if (destinations[i].name == currentMissions[j].client.name ||
+                //    destinations[i].name == currentMissions[j].restaurantName)
+                //{
+                //    destinationShowing = true;
+                //    Debug.Log($"{destinations[i].name} matches");
+                //}
+            }
+
+            destinations[i].EnableObjective(destinationShowing);
+        }
+    }
+
+    public bool MissionsDoneForTheDay()
+    {
+        return missionsDoneForTheDay;
+    }
+    public void DisableHome()
+    {
+        homeDestination.EnableHome(false);
     }
 }

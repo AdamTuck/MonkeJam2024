@@ -14,14 +14,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Health playerHealth;
     [SerializeField] private UIManager UIManager;
     [SerializeField] private GameObject player;
+    [SerializeField] private Transform checkpointPos;
 
     private int currentDay;
 
-    [SerializeField] private LevelManager[] levels;
-
     private GameState currentState;
-    private LevelManager currentLevel;
     private int currentLevelIndex = 0;
+
+    private bool tutorialsEnabled;
+    private bool[] tutorialShown;
 
     [Header("References")]
     [SerializeField] PlayerMovementBehaviour playerMovement;
@@ -49,13 +50,12 @@ public class GameManager : MonoBehaviour
         PlayerInventory.instance.shotgunShell.count = 0;
         PlayerInventory.instance.jumpPad.count = 0;
         PlayerInventory.instance.rocketEngine.count = 0;
-        if (levels.Length > 0)
-        {
-            //ChangeState(GameState.Briefing, levels[currentLevelIndex]);
-            ChangeState(GameState.DayStart, levels[currentLevelIndex]);
-        }
+        
+        ChangeState(GameState.DayStart);
 
         playerHealth.OnDeath += GameOver;
+        tutorialShown = new bool[7];
+        tutorialsEnabled = true;
     }
 
     private void Update()
@@ -63,10 +63,9 @@ public class GameManager : MonoBehaviour
         DayNightRoutines();
     }
 
-    public void ChangeState (GameState state, LevelManager level)
+    public void ChangeState (GameState state)
     {
         currentState = state;
-        currentLevel = level;
 
         switch (currentState)
         {
@@ -99,11 +98,10 @@ public class GameManager : MonoBehaviour
     private void DayStart ()
     {
         Debug.Log("Day start");
-
-        currentLevel.StartLevel();
         cutsceneEnded?.Invoke();
 
-        WeatherController.Instance.RollRandomWeather();
+        EnvironmentManager.Instance.RollRandomWeather();
+        EnvironmentManager.Instance.TurnOffStreetlamps();
 
         WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay = dayStartTime;
         WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
@@ -111,6 +109,11 @@ public class GameManager : MonoBehaviour
         currentDay++;
         UIManager.instance.UpdateCurrentDay(currentDay.ToString());
         UIManager.instance.StartDaySplashScreen();
+
+        MissionManager.instance.DisableHome();
+        MissionManager.instance.AddNewMissionIfAvailable();
+
+        EnemySpawner.instance.spawningEnabled = true;
 
         AudioManager.instance.SetAmbience("dayMusic");
         UIManager.instance.UpdateScrap();
@@ -120,8 +123,6 @@ public class GameManager : MonoBehaviour
     {
         WeatherMakerDayNightCycleManagerScript.Instance.Speed = dayTimeSpeed;
         PlayerInput.instance.UnlockInputs();
-
-        Debug.Log("Level In: " + currentLevel.gameObject.name);
     }
 
     private void StormWallRace()
@@ -132,15 +133,16 @@ public class GameManager : MonoBehaviour
 
     private void DayEnd ()
     {
-        Debug.Log("Level End: " + currentLevel.gameObject.name);
-
         StormWall.instance.ResetWall();
-        MissionManager.instance.ClearCurrentMissions();
+        MissionManager.instance.ResetMissionsForDay();
         WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
         PlayerMovementBehaviour.instance.currentSpeed = 0;
 
+        EnemySpawner.instance.spawningEnabled = false;
+        EnemySpawner.instance.DespawnAllEnemies();
+
         AudioManager.instance.SetAmbience("shop");
-        ChangeState(GameState.NightUpgrade, currentLevel);
+        ChangeState(GameState.NightUpgrade);
     }
 
     private void NightUpgrade()
@@ -150,13 +152,14 @@ public class GameManager : MonoBehaviour
 
     public void EndNightUpgrade()
     {
-        ChangeState(GameState.DayStart, levels[++currentLevelIndex]);
+        ChangeState(GameState.DayStart);
+        EnvironmentManager.Instance.RefreshScrap();
         RespawnAtCheckpoint();
     }
 
     public void EndCurrentDay()
     {
-        ChangeState(GameState.DayEnd, currentLevel);
+        ChangeState(GameState.DayEnd);
     }
 
     private void GameOver()
@@ -181,15 +184,15 @@ public class GameManager : MonoBehaviour
         playerMovement.ResetStats();
         PlayerMovementBehaviour.instance.currentSpeed = 0;
 
-        player.transform.position = new Vector3(currentLevel.CheckpointPos().position.x,
-            currentLevel.CheckpointPos().position.y,
-            currentLevel.CheckpointPos().position.z);
+        player.transform.position = new Vector3(checkpointPos.position.x,
+            checkpointPos.position.y,
+            checkpointPos.position.z);
 
         Physics.SyncTransforms();
 
-        player.transform.rotation = Quaternion.Euler(new Vector3(currentLevel.CheckpointPos().eulerAngles.x, 
-            currentLevel.CheckpointPos().eulerAngles.y, 
-            currentLevel.CheckpointPos().eulerAngles.z));
+        player.transform.rotation = Quaternion.Euler(new Vector3(checkpointPos.eulerAngles.x, 
+            checkpointPos.eulerAngles.y, 
+            checkpointPos.eulerAngles.z));
     }
 
     private void GameEnd ()
@@ -204,13 +207,64 @@ public class GameManager : MonoBehaviour
 
     public void BeginCurrentDay()
     {
-        GameManager.instance.ChangeState(GameState.DayRunning, currentLevel);
+        GameManager.instance.ChangeState(GameState.DayRunning);
     }
 
     private void DayNightRoutines()
     {
-        if (currentState.ToString() == "DayRunning" && WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay >= dayEndTime)
-            ChangeState(GameState.StormWall, currentLevel);
+        if (currentState.ToString() == "DayRunning")
+        {
+            if (WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay >= dayEndTime)
+                ChangeState(GameState.StormWall);
+
+            if (WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay >= 66600 && !EnvironmentManager.Instance.StreetLampsOn())
+                EnvironmentManager.Instance.TurnOnStreetlamps();
+
+            if (tutorialsEnabled)
+            {
+                if (currentDay == 1 && !tutorialShown[0])
+                {
+                    UIManager.instance.ShowTutorial("movementTutorial");
+                    tutorialShown[0] = true;
+                }
+
+                if (!tutorialShown[1] && playerHealth.GetCurrentHealth() < 100)
+                {
+                    UIManager.instance.ShowTutorial("healthTutorial");
+                    tutorialShown[1] = true;
+                }
+
+                if (!tutorialShown[2] && WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay >= 36000 && !PlayerMovementBehaviour.instance.IsOnRoad())
+                {
+                    UIManager.instance.ShowTutorial("roadTutorial");
+                    tutorialShown[2] = true;
+                }
+
+                if (!tutorialShown[3] && PlayerMovementBehaviour.instance.CurrentStamina() < 90)
+                {
+                    UIManager.instance.ShowTutorial("staminaTutorial");
+                    tutorialShown[3] = true;
+                }
+
+                if (!tutorialShown[4] && WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay >= 66600)
+                {
+                    UIManager.instance.ShowTutorial("flashlightTutorial");
+                    tutorialShown[4] = true;
+                }
+
+                if (!tutorialShown[5] && MissionManager.instance.MissionsDoneForTheDay())
+                {
+                    UIManager.instance.ShowTutorial("dayEndTutorial");
+                    tutorialShown[5] = true;
+                }
+
+                if (!tutorialShown[6] && currentDay == 2)
+                {
+                    UIManager.instance.ShowTutorial("statsTutorial");
+                    tutorialShown[6] = true;
+                }
+            }
+        }
     }
 
     public string CurrentState()

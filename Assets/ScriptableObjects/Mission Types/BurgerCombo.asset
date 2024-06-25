@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   missionName: Burger Combo
   restaurantName: Wendys
-  missionLength: 350
+  missionLength: 150
   destinationIndex: 11

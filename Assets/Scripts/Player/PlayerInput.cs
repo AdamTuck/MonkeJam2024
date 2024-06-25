@@ -13,6 +13,8 @@ public class PlayerInput : MonoBehaviour
     public bool jump { get; private set; }
     public bool interact { get; private set; }
     public bool flashlight { get; private set; }
+    public bool item { get; private set; }
+    public bool itemScroll { get; private set; }
     public bool leftBtn { get; private set; }
     public bool rightBtn { get; private set; }
     public bool tab { get; private set; }
@@ -65,6 +67,8 @@ public class PlayerInput : MonoBehaviour
             jump = jump || Input.GetButtonDown("Jump");
             interact = interact || Input.GetKeyDown(KeyCode.E);
             flashlight = flashlight || Input.GetKeyDown(KeyCode.F);
+            item = item || Input.GetKeyDown(KeyCode.R);
+            itemScroll = itemScroll || Input.GetKeyDown(KeyCode.Q);
 
             leftBtn = leftBtn || Input.GetButtonDown("Fire1");
             rightBtn = rightBtn || Input.GetButtonDown("Fire2");
@@ -73,8 +77,8 @@ public class PlayerInput : MonoBehaviour
 
             escape = escape || Input.GetKeyDown(KeyCode.Escape);
 
-            itemWheelDown = itemWheelDown || Input.GetKeyDown(KeyCode.Alpha1);
-            itemWheelUp = itemWheelUp || Input.GetKeyDown(KeyCode.Alpha2);
+            itemWheelDown = itemWheelDown || Input.mouseScrollDelta.y > 0;
+            itemWheelUp = itemWheelUp || Input.mouseScrollDelta.y < 0;
 
             commandPressed = commandPressed || Input.GetKeyDown(KeyCode.F);
         }
@@ -97,6 +101,8 @@ public class PlayerInput : MonoBehaviour
         jump = false;
         interact = false;
         flashlight = false;
+        item = false;
+        itemScroll = false;
 
         leftBtn = false;
         rightBtn = false;

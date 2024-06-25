@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Mission
 {
-    public bool foodPickedUp;
+    public bool foodPickedUp, foodDelivered;
 
     public Client client;
     public string missionName;

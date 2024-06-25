@@ -10,6 +10,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Health playerHealth;
     [SerializeField] private GameObject cutsceneScreen;
     [SerializeField] private GameObject pauseScreen;
+    [SerializeField] private GameObject tutorialTextObj;
     [SerializeField] private TMP_Text tutorialText;
     [SerializeField] private float tutorialTimeout;
     [SerializeField] private Slider healthBar;
@@ -39,6 +40,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] CanvasGroup daySpashScreenTxt;
     [SerializeField] TextMeshProUGUI tooltipText;
 
+    [SerializeField] TextMeshProUGUI quotaRemainingText;
     [SerializeField] TextMeshProUGUI currentDayTxt;
 
     public TMP_Text txtHealth;
@@ -88,18 +90,30 @@ public class UIManager : MonoBehaviour
     {
         switch (tutorialType)
         {
-            case "shootTutorial":
-                tutorialText.text = "Click to shoot.\nPress 1 & 2 to switch weapons.";
+            case "movementTutorial":
+                tutorialText.text = "Use WASD to move & shift to pedal hard.\nMousewheel/Q to switch items, left click/R to use.\n";
                 break;
-            case "enemyTutorial":
-                tutorialText.text = "Don't let the enemy see you.";
+            case "healthTutorial":
+                tutorialText.text = "Avoid zombies while making deliveries.\nIf your health reduces to 0, the run ends.";
                 break;
-            case "grabTutorial":
-                tutorialText.text = "Press E to interact, and pick up/drop items.";
+            case "roadTutorial":
+                tutorialText.text = "Stay on the roads if you can!\nYou'll move faster and use less stamina.";
+                break;
+            case "staminaTutorial":
+                tutorialText.text = "Stamina only drains while pedalling.\nCoast the bike (don't hold W) or come to a stop to slowly regain some stamina.";
+                break;
+            case "flashlightTutorial":
+                tutorialText.text = "F to toggle on/off your bike light.";
+                break;
+            case "dayEndTutorial":
+                tutorialText.text = "Once you've delivered your quota for the day, you can sleep.\nYou can always play later to earn more scrap if you want.\n\nDon't stay out too late.";
+                break;
+            case "statsTutorial":
+                tutorialText.text = "Stamina and health recover after resting each night.";
                 break;
         }
 
-        tutorialText.gameObject.SetActive(true);
+        tutorialTextObj.SetActive(true);
         tutorialTimer = 0;
         tutorialShowing = true;
     }
@@ -112,7 +126,7 @@ public class UIManager : MonoBehaviour
         {
             tutorialShowing = false;
             tutorialTimer = 0;
-            tutorialText.gameObject.SetActive(false);
+            tutorialTextObj.SetActive(false);
         }
     }
 
@@ -239,6 +253,14 @@ public class UIManager : MonoBehaviour
     public void UpdateCurrentDay(string dayNum)
     {
         currentDayTxt.text = "DAY " + dayNum;
+    }
+
+    public void UpdateQuotaRemaining(int quotaRemaining)
+    {
+        if (quotaRemaining > 0)
+            quotaRemainingText.text = $"Quota Remaining: {quotaRemaining}";
+        else
+            quotaRemainingText.text = $"Day Complete";
     }
 
     public void ShowTooltip(string _tooltipText)

@@ -49,14 +49,14 @@ public class PlayerItemInteractor : MonoBehaviour
     {
         //Player input all only happens once with certain cooldown
         //Use selected Item
-        if (playerInput.leftBtn && !itemOnCooldown)
+        if ((playerInput.leftBtn || playerInput.item) && !itemOnCooldown)
         {
             itemOnCooldown = true;
             UseItem();
             Invoke(nameof(resetItemCooldown), itemCooldownTimer);
         }
         //Swap weapons
-        if (playerInput.itemWheelUp)
+        if (playerInput.itemWheelUp || playerInput.itemScroll)
         {
             ItemUp();
         }

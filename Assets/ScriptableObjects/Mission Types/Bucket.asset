@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   missionName: Chicken Bucket
   restaurantName: Jollibee
-  missionLength: 450
+  missionLength: 135
   destinationIndex: 9

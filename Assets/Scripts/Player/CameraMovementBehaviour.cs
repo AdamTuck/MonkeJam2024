@@ -8,11 +8,25 @@ public class CameraMovementBehaviour : MonoBehaviour
 
     [Header("Player Turn")]
     [SerializeField] private float turnSpeed;
-    [SerializeField] private bool invertMouse;
+    public float sensitivityMultiplier;
+    public bool invertMouse;
     [SerializeField] private float maxCamXRotation;
     [SerializeField] private float maxCamYRotation;
 
     private float cameraXRotation, cameraYRotation;
+
+    public static CameraMovementBehaviour instance;
+
+    private void Awake()
+    {
+        if (instance && instance != this)
+        {
+            Destroy(instance);
+            return;
+        }
+
+        instance = this;
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -21,6 +35,8 @@ public class CameraMovementBehaviour : MonoBehaviour
         Cursor.visible = false;
 
         playerInput = PlayerInput.instance;
+
+        sensitivityMultiplier = 1;
     }
 
     // Update is called once per frame
@@ -31,8 +47,8 @@ public class CameraMovementBehaviour : MonoBehaviour
 
     void CameraRotation ()
     {
-        cameraXRotation += playerInput.mouseY * Time.deltaTime * turnSpeed * (invertMouse ? 1 : -1);
-        cameraYRotation += playerInput.mouseX * Time.deltaTime * turnSpeed;
+        cameraXRotation += playerInput.mouseY * sensitivityMultiplier * Time.deltaTime * turnSpeed * (invertMouse ? 1 : -1);
+        cameraYRotation += playerInput.mouseX * sensitivityMultiplier * Time.deltaTime * turnSpeed;
 
         cameraXRotation = Mathf.Clamp(cameraXRotation, maxCamXRotation*-1, maxCamXRotation);
         cameraYRotation = Mathf.Clamp(cameraYRotation, maxCamYRotation*-1, maxCamYRotation);

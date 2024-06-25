@@ -10,8 +10,10 @@ public class ScrapBox : MonoBehaviour
 
         if (other.CompareTag("Player"))
         {
-            PlayerInventory.instance.scrap += 10;
+            PlayerInventory.instance.scrap += 5;
             UIManager.instance.UpdateScrap();
+            AudioManager.instance.PlaySFX("scrapCollect");
+
             gameObject.SetActive(false);
         }
     }

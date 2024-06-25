@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   missionName: Dozen Donuts
   restaurantName: Dunkin' Donuts
-  missionLength: 300
+  missionLength: 180
   destinationIndex: 10

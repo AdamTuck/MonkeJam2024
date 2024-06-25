@@ -11,19 +11,19 @@ public class PlayerMovementBehaviour : MonoBehaviour
 
     [Header("Player Movement")]
     [SerializeField] private float topSpeed;
+    [SerializeField] private float maxReverseSpeed;
     [SerializeField] private float topSpeedSprinting;
     [SerializeField] public float accelerationRate;
     [SerializeField] public float decelerationRate;
     [SerializeField] private float momentumDegradeRate;
+    [SerializeField] private float offRoadDegradeMultiplier;
     [SerializeField] private float gravity = -9.81f;
-    [SerializeField] private AudioSource cycleSound;
-    [SerializeField] private AudioSource sprintSound;
 
     [Header("Player Stamina")]
     [SerializeField] private float sprintMultiplier;
     [SerializeField] public float topEndurance;
-    [SerializeField] private float enduranceDegradeRateResting;
-    [SerializeField] private float enduranceDegradeMultiplier;
+    [SerializeField] private float staminaDegradeRateResting;
+    [SerializeField] private float staminaDegradeMultiplier;
 
     [Header("Ground Check")]
     [SerializeField] private Transform groundCheckTransform;
@@ -33,12 +33,13 @@ public class PlayerMovementBehaviour : MonoBehaviour
     private CharacterController characterController;
 
     private Vector3 playerVelocity;
-    private float currentEndurance;
+    private float currentStamina;
     public bool isGrounded { get; private set; }
     public float currentSpeed;
     public bool rocketEngine;
     private float moveMultiplier = 1;
 
+    private bool currentlyAccelerating;
 
     private void Awake()
     {
@@ -54,7 +55,7 @@ public class PlayerMovementBehaviour : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         playerInput = PlayerInput.instance;
-        currentEndurance = topEndurance;
+        currentStamina = topEndurance;
     }
 
     void Update()
@@ -62,66 +63,75 @@ public class PlayerMovementBehaviour : MonoBehaviour
         GroundedCheck();
         MovePlayer();
         EnduranceDegrade();
+        SetBikeAudio();
+    }
+
+    private void SetBikeAudio()
+    {
         if (currentSpeed > 0)
         {
-            //play sound
-            cycleSound.enabled = true;
-            if (currentSpeed > topSpeed)
-            {
-                cycleSound.enabled = false;
-                sprintSound.enabled = true;
-            }
+            if (currentlyAccelerating)
+                AudioManager.instance.SetBikeAudio("bikeAccelerate");
             else
-            {
-                cycleSound.enabled = true;
-                sprintSound.enabled = false;
-            }
+                AudioManager.instance.SetBikeAudio("bikeCoast");
         }
         else
         {
-            cycleSound.enabled = false;
-            sprintSound.enabled = false;
+            AudioManager.instance.SetBikeAudio("none");
         }
     }
-    
+
     void EnduranceDegrade()
     {
         // if currently cycling
-        currentEndurance -= enduranceDegradeRateResting * enduranceDegradeMultiplier;
+        currentStamina -= staminaDegradeRateResting * staminaDegradeMultiplier;
 
-        UIManager.instance.SetStaminaBar(currentEndurance / 100);
+        UIManager.instance.SetStaminaBar(currentStamina / 100);
+    }
+
+    public float CurrentStamina ()
+    {
+        return currentStamina;
     }
 
     void MovePlayer()
     {
-        if (playerInput.vertical > 0 && currentEndurance > 0)
+        float offRoadPenalty = (IsOnRoad()) ? 1f : offRoadDegradeMultiplier;
+
+        if (playerInput.vertical > 0 && currentStamina > 0)
         {
+            currentlyAccelerating = true;
+
             if (playerInput.sprint)
             {
-                enduranceDegradeMultiplier = 2;
-                currentSpeed = Mathf.Clamp(currentSpeed + accelerationRate*2, 0, topSpeedSprinting);
+                staminaDegradeMultiplier = (IsOnRoad())? 2:4;
+                currentSpeed = Mathf.Clamp(currentSpeed + accelerationRate*2/offRoadPenalty, 0, topSpeedSprinting);
             }
             else
             {
-                enduranceDegradeMultiplier = 1;
+                staminaDegradeMultiplier = (IsOnRoad()) ? 1:2;
 
                 if (currentSpeed > topSpeed)
-                    currentSpeed = Mathf.Clamp(currentSpeed - momentumDegradeRate, 0, topSpeedSprinting);
+                    currentSpeed = Mathf.Clamp(currentSpeed - momentumDegradeRate*offRoadPenalty, 0, topSpeedSprinting);
                 else
-                    currentSpeed = Mathf.Clamp(currentSpeed + accelerationRate, 0, topSpeed);
+                    currentSpeed = Mathf.Clamp(currentSpeed + accelerationRate/offRoadPenalty, 0, topSpeed);
             }
-
-            //currentSpeed = Mathf.Clamp(currentSpeed + accelerationRate, 0, topSpeed);
         }
-        else if (playerInput.vertical < 0 && currentEndurance > 0)
+        else if (playerInput.vertical < 0 && currentStamina > 0)
         {
-            currentSpeed = Mathf.Clamp(currentSpeed - decelerationRate*2, 0, topSpeedSprinting);
-            enduranceDegradeMultiplier = 1;
+            currentlyAccelerating = false;
+
+            currentSpeed = Mathf.Clamp(currentSpeed - decelerationRate * 2, maxReverseSpeed, topSpeedSprinting);
+            staminaDegradeMultiplier = (IsOnRoad()) ? 1 : 2;
         }
         else
         {
-            currentSpeed = Mathf.Clamp(currentSpeed - momentumDegradeRate, 0, topSpeed * 1.5f);
-            enduranceDegradeMultiplier = 0;
+            currentlyAccelerating = false;
+
+            if (currentSpeed > 0)
+                currentSpeed = Mathf.Clamp(currentSpeed - momentumDegradeRate*(offRoadPenalty*4), 0, topSpeedSprinting);
+            
+            staminaDegradeMultiplier = -0.5f;
         }
         
         //moveMultiplier = playerInput.sprint ? sprintMultiplier : 1;
@@ -131,8 +141,9 @@ public class PlayerMovementBehaviour : MonoBehaviour
         { 
             //When rocketboosting you constantly move at topSpeed but spend no stamina
             currentSpeed = topSpeedSprinting + 8;
-            enduranceDegradeMultiplier = 0;
+            staminaDegradeMultiplier = 0;
         }
+
         characterController.Move(transform.forward * currentSpeed * Time.deltaTime);
 
         if (isGrounded && playerVelocity.y < 0)
@@ -152,6 +163,22 @@ public class PlayerMovementBehaviour : MonoBehaviour
         isGrounded = Physics.CheckSphere(groundCheckTransform.position, groundCheckDistance, groundLayerMask);
     }
 
+    public bool IsOnRoad()
+    {
+        bool isOnRoad = false;
+        Collider[] nearbyGround = Physics.OverlapSphere(groundCheckTransform.position, groundCheckDistance);
+
+        for (int i = 0; i < nearbyGround.Length; i++)
+        {
+            if (nearbyGround[i].CompareTag("Road"))
+            {
+                isOnRoad = true;
+            }
+        }
+
+        return isOnRoad;
+    }
+
     public void SetYVelocity (float value)
     {
         playerVelocity.y = value;
@@ -164,6 +191,6 @@ public class PlayerMovementBehaviour : MonoBehaviour
 
     public void ResetStats()
     {
-        currentEndurance = topEndurance;
+        currentStamina = topEndurance;
     }
 }

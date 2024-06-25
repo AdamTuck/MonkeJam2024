@@ -48,8 +48,6 @@ public class StormWall : MonoBehaviour
             transform.localScale.y - wallAdvanceSpeed*Time.deltaTime, 
             transform.localScale.z);
 
-        Debug.Log($"transform x: {transform.localScale.x/2}, distance: {Vector3.Distance(player.transform.position, checkpointPos.transform.position)}");
-
         if (Vector3.Distance(player.transform.position, checkpointPos.transform.position) > transform.localScale.x/7.3)
         {
             player.GetComponent<Health>().DeductHealth(healthDrainSpeed * Time.deltaTime);
@@ -64,7 +62,6 @@ public class StormWall : MonoBehaviour
 
     public void ShrinkWall()
     {
-        Debug.Log("Wall shrinking");
         meshRenderer.enabled = true;
         wallAdvancing = true;
     }

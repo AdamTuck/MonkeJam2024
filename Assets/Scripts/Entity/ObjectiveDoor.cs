@@ -20,9 +20,9 @@ public class ObjectiveDoor : MonoBehaviour, ISelectable
         UIManager.instance.HideTooltip();
     }
 
-    public void ShowWaypoint()
+    public void ShowWaypoint(bool showWaypoint)
     {
-        waypointObj.SetActive(true);
+        waypointObj.SetActive(showWaypoint);
     }
 
     public void OnSelect()
@@ -32,6 +32,17 @@ public class ObjectiveDoor : MonoBehaviour, ISelectable
         else
             MissionManager.instance.DeliverFood(gameObject.name);
 
+        EnableObjective(false);
+    }
+
+    public void EnableObjective (bool enableObjective)
+    {
+        gameObject.SetActive(enableObjective);
+        ShowWaypoint(enableObjective);
+    }
+
+    public void DisableObjective()
+    {
         waypointObj.SetActive(false);
         gameObject.SetActive(false);
     }
