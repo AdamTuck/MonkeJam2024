@@ -111,6 +111,9 @@ public class UIManager : MonoBehaviour
             case "statsTutorial":
                 tutorialText.text = "Stamina and health recover after resting each night.";
                 break;
+            case "weatherTutorial":
+                tutorialText.text = "On days where the weather is worse, stamina drains faster and there are more zombies.\nHowever, customers tip better and deliveries will earn you much more scrap.";
+                break;
         }
 
         tutorialTextObj.SetActive(true);

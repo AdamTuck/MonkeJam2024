@@ -10,7 +10,9 @@ public class MissionManager : MonoBehaviour
     [SerializeField] private int maxConcurrentMissions;
     [SerializeField] private int dailyQuota;
     [SerializeField] private int dailyQuotaIncreasePerDay;
+    [SerializeField] private int missionCompleteScrapReward;
     [SerializeField] private int missionFailScrapPenalty;
+    [HideInInspector] public int dangerousConditionsExtraScrap;
     [SerializeField] private float newMissionIntervalDecreasePerDay;
 
     [Header("Data Refs")]
@@ -129,6 +131,7 @@ public class MissionManager : MonoBehaviour
             {
                 PlayerInventory.instance.scrap += currentMissions[i].scrapReward;
                 UIManager.instance.UpdateScrap();
+                missionsCompletedToday++;
 
                 currentMissions.RemoveAt(i);
 
@@ -180,9 +183,7 @@ public class MissionManager : MonoBehaviour
             missionTypes[randomMissionIndex].missionName, 
             missionTypes[randomMissionIndex].restaurantName, 
             missionTypes[randomMissionIndex].missionLength,
-            10);
-
-        //destinations[missionTypes[randomMissionIndex].destinationIndex].EnableObjective(true);
+            missionCompleteScrapReward+dangerousConditionsExtraScrap);
 
         return newMission;
     }
@@ -195,7 +196,6 @@ public class MissionManager : MonoBehaviour
             if (currentMissions[i].restaurantName == _restaurantName)
             {
                 currentMissions[i].foodPickedUp = true;
-                //destinations[currentMissions[i].client.clientLocationIndex].EnableObjective(true);
             }
         }
         audioSource.clip = sounds[0];
@@ -221,8 +221,6 @@ public class MissionManager : MonoBehaviour
         CompleteMissions();
         UpdateMissionUI();
         ShowAndHideDestinations();
-
-        missionsCompletedToday++;
 
         UIManager.instance.UpdateQuotaRemaining(Mathf.Clamp(dailyQuota - missionsCompletedToday, 0, dailyQuota));
 
@@ -251,13 +249,6 @@ public class MissionManager : MonoBehaviour
                 if (currentMissions[j].foodPickedUp &&
                     destinations[i].name == currentMissions[j].client.name)
                     destinationShowing = true;
-
-                //if (destinations[i].name == currentMissions[j].client.name ||
-                //    destinations[i].name == currentMissions[j].restaurantName)
-                //{
-                //    destinationShowing = true;
-                //    Debug.Log($"{destinations[i].name} matches");
-                //}
             }
 
             destinations[i].EnableObjective(destinationShowing);

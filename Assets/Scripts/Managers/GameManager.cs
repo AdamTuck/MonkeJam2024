@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
         ChangeState(GameState.DayStart);
 
         playerHealth.OnDeath += GameOver;
-        tutorialShown = new bool[7];
+        tutorialShown = new bool[8];
         tutorialsEnabled = true;
     }
 
@@ -100,15 +100,15 @@ public class GameManager : MonoBehaviour
         Debug.Log("Day start");
         cutsceneEnded?.Invoke();
 
-        EnvironmentManager.Instance.RollRandomWeather();
-        EnvironmentManager.Instance.TurnOffStreetlamps();
-
         WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay = dayStartTime;
         WeatherMakerDayNightCycleManagerScript.Instance.Speed = 0;
 
         currentDay++;
         UIManager.instance.UpdateCurrentDay(currentDay.ToString());
         UIManager.instance.StartDaySplashScreen();
+
+        EnvironmentManager.Instance.RollRandomWeather();
+        EnvironmentManager.Instance.TurnOffStreetlamps();
 
         MissionManager.instance.DisableHome();
         MissionManager.instance.AddNewMissionIfAvailable();
@@ -263,8 +263,21 @@ public class GameManager : MonoBehaviour
                     UIManager.instance.ShowTutorial("statsTutorial");
                     tutorialShown[6] = true;
                 }
+
+                if (!tutorialShown[7] && currentDay >= 2
+                    && WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay >= 36000
+                    && MissionManager.instance.dangerousConditionsExtraScrap > 0)
+                {
+                    UIManager.instance.ShowTutorial("weatherTutorial");
+                    tutorialShown[7] = true;
+                }
             }
         }
+    }
+
+    public int CurrentDay()
+    {
+        return currentDay;
     }
 
     public string CurrentState()

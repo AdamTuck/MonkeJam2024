@@ -36,6 +36,33 @@ public class EnvironmentManager : MonoBehaviour
         RollRandomWeather();
     }
 
+    private void Update()
+    {
+        CheckStreetlamps();
+    }
+
+    public void SetTitleScreenAmbience()
+    {
+        WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay = 31800;
+        WeatherMakerDayNightCycleManagerScript.Instance.Speed = 300;
+        WeatherMakerDayNightCycleManagerScript.Instance.NightSpeed = 300;
+
+        TurnOnStreetlamps();
+    }
+
+    private void CheckStreetlamps()
+    {
+        if ((WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay >= 66600 ||
+            WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay <= 32400) &&
+            !streetLampsOn)
+            TurnOnStreetlamps();
+
+        if (WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay < 66600 &&
+            WeatherMakerDayNightCycleManagerScript.Instance.TimeOfDay > 32400 &&
+            streetLampsOn)
+            TurnOffStreetlamps();
+    }
+
     public void RollRandomWeather()
     {
         float randomWeatherRoll = UnityEngine.Random.Range(0f, 1f);
@@ -45,14 +72,36 @@ public class EnvironmentManager : MonoBehaviour
         if (randomCloudiness < 25f)
             visibility = 6000;
 
+        if (GameManager.instance) { 
+            if (GameManager.instance.CurrentDay() == 1)
+            {
+                randomWeatherRoll = 0f;
+                visibility = 6000;
+            }
+        }
+
+
         int currentMonth = DigitalRuby.WeatherMaker.WeatherMakerDayNightCycleManagerScript.Instance.DateTime.Month;
 
         if (randomWeatherRoll > 0.8f)
+        {
             UpdateWeathermaker("Rain", visibility, 25, 70);
+            if (MissionManager.instance)
+                MissionManager.instance.dangerousConditionsExtraScrap = 10;
+        }
         else if (randomWeatherRoll > 0.7f)
+        {
             UpdateWeathermaker("Drizzle", visibility, 10, 50);
-        else
+            if (MissionManager.instance)
+                MissionManager.instance.dangerousConditionsExtraScrap = 5;
+        }
+        else 
+        {
             UpdateWeathermaker("None", visibility, 0, randomCloudiness);
+            if (MissionManager.instance)
+                MissionManager.instance.dangerousConditionsExtraScrap = 0;
+        }
+            
     }
 
     public void UpdateWeathermaker(string precipitationType, float visibility, float windSpeed, float cloudinessLevel)

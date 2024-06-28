@@ -13,6 +13,8 @@ public class TitleScreen : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        EnvironmentManager.Instance.SetTitleScreenAmbience();
     }
 
     public void StartGame()
